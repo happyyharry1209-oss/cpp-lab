@@ -36,6 +36,14 @@ pnpm test:e2e
 
 Playwright 預設使用電腦已安裝的 Google Chrome。
 
+實際把 12 道題目的參考解答送到 Judge0，並跑完所有測資：
+
+```powershell
+$env:RUN_JUDGE0_INTEGRATION='1'; pnpm exec vitest run src/content/solutions.integration.test.ts
+```
+
+這個測試會呼叫外部執行服務，因此不包含在一般單元測試中。
+
 ## C++ 執行設定
 
 開發環境預設使用公開的低流量 Judge0 CE 端點。正式部署時，建議使用自己的 Judge0 執行環境，並在 Vercel 設定：
