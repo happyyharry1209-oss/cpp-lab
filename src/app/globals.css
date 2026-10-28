@@ -258,6 +258,30 @@ code {
   background: var(--surface-soft);
 }
 
+.github-login-button {
+  cursor: pointer;
+}
+
+.signed-in-avatar {
+  border-color: #bfddd7;
+  background: var(--surface-teal);
+  color: var(--teal-deep);
+}
+
+.auth-loading {
+  position: relative;
+}
+
+.auth-loading::after {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  content: "";
+  animation: spin 800ms linear infinite;
+}
+
 .page-frame {
   min-height: calc(100vh - 72px);
 }
@@ -2442,6 +2466,43 @@ code {
   gap: 20px;
 }
 
+.cloud-account-panel {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.cloud-account-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-teal);
+  color: var(--teal-deep);
+}
+
+.cloud-account-panel strong {
+  font-size: 12px;
+}
+
+.cloud-account-panel p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 10.5px;
+}
+
+.cloud-account-panel .secondary-button {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 10.5px;
+}
+
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2739,6 +2800,197 @@ code {
   border-top: 1px solid var(--border);
 }
 
+.login-page {
+  display: grid;
+  max-width: 980px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 18px;
+  margin: 25px auto;
+}
+
+.login-card,
+.login-aside {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.login-card {
+  padding: 38px;
+}
+
+.login-icon {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 25px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-teal);
+  color: var(--teal-deep);
+}
+
+.login-card h1 {
+  margin: 9px 0 13px;
+  font-size: 34px;
+  font-weight: 790;
+  letter-spacing: -0.05em;
+}
+
+.login-card > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.85;
+}
+
+.login-benefits {
+  display: grid;
+  gap: 9px;
+  margin: 23px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.login-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: 11.5px;
+}
+
+.login-benefits svg {
+  color: var(--teal);
+}
+
+.github-signin {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 18px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.github-signin:hover:not(:disabled) {
+  background: #263638;
+}
+
+.github-signin:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.login-complete {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.login-setup-note {
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.login-setup-note strong {
+  font-size: 12px;
+}
+
+.login-setup-note p {
+  margin: 6px 0 11px;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.7;
+}
+
+.login-setup-note a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--teal-deep);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.form-error {
+  margin: 13px 0 0;
+  color: var(--danger);
+  font-size: 11px;
+}
+
+.login-aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 35px;
+  background: var(--surface-teal);
+}
+
+.login-aside > span {
+  color: var(--teal-deep);
+  font-family: monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.login-aside h2 {
+  margin: 15px 0 12px;
+  font-size: 27px;
+  font-weight: 760;
+  letter-spacing: -0.04em;
+  line-height: 1.3;
+}
+
+.login-aside p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.callback-page {
+  display: flex;
+  min-height: calc(100vh - 72px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  text-align: center;
+}
+
+.callback-page h1 {
+  margin: 18px 0 7px;
+  font-size: 25px;
+}
+
+.callback-page p {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.spin {
+  animation: spin 850ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .about-page {
   max-width: 1180px;
 }
@@ -2950,8 +3202,18 @@ code {
   .stat-grid,
   .dashboard-columns,
   .notes-layout,
-  .tech-grid {
+  .tech-grid,
+  .login-page {
     grid-template-columns: 1fr;
+  }
+
+  .cloud-account-panel {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .cloud-account-panel > :last-child {
+    grid-column: 1 / -1;
+    width: 100%;
   }
 
   .lesson-completion,

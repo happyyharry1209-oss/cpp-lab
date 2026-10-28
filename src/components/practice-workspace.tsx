@@ -26,6 +26,7 @@ import {
   uniquePush,
 } from "@/lib/progress";
 import { useLocalProgress } from "@/hooks/use-local-progress";
+import { getAccessToken } from "@/lib/supabase/auth-store";
 import { CodeEditor } from "./code-editor";
 import { HintPanel } from "./hint-panel";
 
@@ -133,9 +134,15 @@ export function PracticeWorkspace({
     setResult(null);
     setTab("result");
     try {
+      const accessToken = mode === "submit" ? await getAccessToken() : null;
       const response = await fetch(`/api/${mode}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken
+            ? { Authorization: `Bearer ${accessToken}` }
+            : {}),
+        },
         body: JSON.stringify({
           exerciseId: exercise.slug,
           sourceCode: code,

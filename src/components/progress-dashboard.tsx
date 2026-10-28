@@ -9,6 +9,7 @@ import {
   Target,
 } from "lucide-react";
 import Link from "next/link";
+import { CloudAccountPanel } from "./cloud-account-panel";
 import { exercises } from "@/content/exercises";
 import { lessons } from "@/content/lessons";
 import { useLocalProgress } from "@/hooks/use-local-progress";
@@ -40,6 +41,8 @@ export function ProgressDashboard() {
         <h1>我的學習進度</h1>
         <p>所有數字都來自這台電腦上的實際學習紀錄。</p>
       </header>
+
+      <CloudAccountPanel />
 
       <section className="stat-grid" aria-label="學習統計">
         <article>

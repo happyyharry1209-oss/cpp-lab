@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AuthControl } from "./auth-control";
 import { Logo } from "./logo";
 
 const navigation = [
@@ -77,14 +78,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               <BadgeHelp size={20} />
             </Link>
-            <Link
-              className="avatar-button"
-              href="/dashboard"
-              aria-label="個人中心"
-              title="個人中心"
-            >
-              <UserRound size={20} />
-            </Link>
+            <AuthControl />
           </div>
         </div>
       </header>

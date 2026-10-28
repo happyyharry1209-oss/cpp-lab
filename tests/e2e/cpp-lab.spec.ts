@@ -86,3 +86,17 @@ test("lesson content remains readable on a narrow viewport", async ({ page }) =>
   await expect(page.locator("body")).not.toHaveCSS("overflow-x", "scroll");
   expect(errors).toEqual([]);
 });
+
+test("login setup remains clear before Supabase is configured", async ({
+  page,
+}) => {
+  const errors = captureRuntimeErrors(page);
+  await page.goto("/login");
+
+  await expect(page.getByRole("heading", { name: "登入 C++ Lab" })).toBeVisible();
+  await expect(page.getByText("Supabase 尚未設定")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /先使用本機模式/ }),
+  ).toHaveAttribute("href", "/dashboard");
+  expect(errors).toEqual([]);
+});

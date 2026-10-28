@@ -3,6 +3,7 @@ import { getExercise } from "@/content/exercises";
 import { gradeExercise } from "@/lib/grader";
 import { validateSource } from "@/lib/judge0";
 import { checkDailyRunLimit } from "@/lib/rate-limit";
+import { authorizeOwnerRequest } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -13,6 +14,14 @@ function clientKey(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const authorization = await authorizeOwnerRequest(request);
+    if (!authorization.allowed) {
+      return NextResponse.json(
+        { error: authorization.error },
+        { status: authorization.status ?? 403 },
+      );
+    }
+
     const body = (await request.json()) as {
       exerciseId?: string;
       sourceCode?: string;
