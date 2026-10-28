@@ -2,6 +2,8 @@
 
 C++ Lab 是一個繁體中文、桌面優先的 C++ 學習網站。首頁負責介紹學習路線與作品集內容，練習工作台則獨立處理題目、分層提示、程式編輯與真實批改。
 
+正式網站：<https://cpp-lab-sandy.vercel.app>
+
 ## 已完成
 
 - 8 節從基礎語法到二分搜尋的課程
@@ -81,6 +83,12 @@ OWNER_GITHUB_EMAIL=your-github-email@example.com
 2. 在 Vercel 匯入儲存庫。
 3. 將 Judge0 環境變數加入 Vercel Project Settings。
 4. 部署後以 `/`、`/practice` 與一題完整提交進行 smoke test。
+
+目前 production 專案可使用 `pnpm deploy` 部署。Supabase 的 URL Configuration 需要包含：
+
+```text
+https://cpp-lab-sandy.vercel.app/auth/callback
+```
 
 ## 公開前待完成
 
