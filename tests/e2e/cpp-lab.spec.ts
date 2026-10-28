@@ -35,7 +35,7 @@ test("homepage opens a separate practice workspace", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test("practice workspace reveals a hint and grades real C++", async ({ page }) => {
+test("practice workspace reveals a hint and executes real C++", async ({ page }) => {
   const errors = captureRuntimeErrors(page);
   await page.goto("/practice");
   await page.getByRole("button", { name: "顯示下一個提示" }).click();
@@ -46,11 +46,15 @@ test("practice workspace reveals a hint and grades real C++", async ({ page }) =
   await page.keyboard.press("Control+A");
   await editor.fill(helloWorldSolution);
 
-  await page.getByRole("button", { name: "提交批改" }).click();
+  await page.getByRole("button", { name: "執行測試" }).click();
   await expect(
     page.getByText("測試通過", { exact: true }),
   ).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByText(/通過 \d+ \/ \d+ 組測資/)).toBeVisible();
+  await expect(
+    page.getByText("Hello, C++ Lab!", {
+      exact: true,
+    }).last(),
+  ).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -94,9 +98,38 @@ test("login setup remains clear before Supabase is configured", async ({
   await page.goto("/login");
 
   await expect(page.getByRole("heading", { name: "登入 C++ Lab" })).toBeVisible();
-  await expect(page.getByText("Supabase 尚未設定")).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: /先使用本機模式/ }),
-  ).toHaveAttribute("href", "/dashboard");
+  const setupNote = page.getByText("Supabase 尚未設定");
+  const githubButton = page.locator(".github-signin");
+  await expect(setupNote.or(githubButton)).toBeVisible();
+
+  if (await setupNote.isVisible()) {
+    await expect(
+      page.getByRole("link", { name: /先使用本機模式/ }),
+    ).toHaveAttribute("href", "/dashboard");
+  }
   expect(errors).toEqual([]);
+});
+
+test("GitHub login starts a PKCE authorization request", async ({ page }) => {
+  await page.goto("/login");
+  const githubButton = page.locator(".github-signin");
+  if ((await githubButton.count()) === 0) {
+    test.skip(true, "Supabase is not configured in this environment");
+  }
+
+  let authorizeUrl: URL | undefined;
+  await page.route("**/auth/v1/authorize**", async (route) => {
+    authorizeUrl = new URL(route.request().url());
+    await route.abort();
+  });
+
+  await githubButton.click();
+  await expect.poll(() => authorizeUrl?.searchParams.get("provider")).toBe(
+    "github",
+  );
+  expect(authorizeUrl?.searchParams.get("code_challenge_method")).toBe("s256");
+  expect(authorizeUrl?.searchParams.get("code_challenge")).toBeTruthy();
+  expect(authorizeUrl?.searchParams.get("redirect_to")).toContain(
+    "/auth/callback",
+  );
 });
