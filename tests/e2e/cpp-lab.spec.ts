@@ -54,6 +54,24 @@ test("practice workspace reveals a hint and grades real C++", async ({ page }) =
   expect(errors).toEqual([]);
 });
 
+test("practice editor starts with code and accepts keyboard input", async ({
+  page,
+}) => {
+  const errors = captureRuntimeErrors(page);
+  await page.goto("/practice");
+
+  const editor = page.locator(".cm-content");
+  await expect(editor).toBeVisible();
+  await expect(editor).toHaveAttribute("contenteditable", "true");
+  await expect(editor).toContainText("#include <iostream>");
+
+  await editor.click();
+  await page.keyboard.press("Control+A");
+  await page.keyboard.insertText("// typed in editor");
+  await expect(editor).toContainText("// typed in editor");
+  expect(errors).toEqual([]);
+});
+
 test("lesson content remains readable on a narrow viewport", async ({ page }) => {
   const errors = captureRuntimeErrors(page);
   await page.setViewportSize({ width: 390, height: 844 });
