@@ -76,6 +76,42 @@ test("practice editor starts with code and accepts keyboard input", async ({
   expect(errors).toEqual([]);
 });
 
+test("long code scrolls inside the editor", async ({ page }) => {
+  await page.goto("/practice");
+  const editor = page.locator(".cm-content");
+  await editor.click();
+  await page.keyboard.press("Control+A");
+  await page.keyboard.insertText(
+    Array.from(
+      { length: 80 },
+      (_, index) => `int value_${index + 1} = ${index + 1};`,
+    ).join("\n"),
+  );
+
+  const scroller = page.locator(".cm-scroller");
+  await expect
+    .poll(() =>
+      scroller.evaluate((element) => ({
+        clientHeight: element.clientHeight,
+        scrollHeight: element.scrollHeight,
+      })),
+    )
+    .toMatchObject({ clientHeight: expect.any(Number) });
+
+  const dimensions = await scroller.evaluate((element) => ({
+    clientHeight: element.clientHeight,
+    scrollHeight: element.scrollHeight,
+  }));
+  expect(dimensions.scrollHeight).toBeGreaterThan(dimensions.clientHeight);
+
+  await page.keyboard.press("Control+Home");
+  await scroller.hover();
+  await page.mouse.wheel(0, 1000);
+  await expect
+    .poll(() => scroller.evaluate((element) => element.scrollTop))
+    .toBeGreaterThan(0);
+});
+
 test("lesson content remains readable on a narrow viewport", async ({ page }) => {
   const errors = captureRuntimeErrors(page);
   await page.setViewportSize({ width: 390, height: 844 });

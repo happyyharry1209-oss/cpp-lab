@@ -1582,20 +1582,29 @@ code {
 }
 
 .code-editor {
+  display: flex;
   min-height: 300px;
   flex: 1 1 300px;
+  flex-direction: column;
   overflow: hidden;
   background: var(--editor);
 }
 
+.code-editor > .cm-theme {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
 .code-editor .cm-editor {
   height: 100%;
-  min-height: 320px;
+  min-height: 0;
   background: var(--editor);
   font-size: 12.5px;
 }
 
 .code-editor .cm-scroller {
+  height: 100%;
   overflow: auto;
   font-family:
     "Cascadia Code",

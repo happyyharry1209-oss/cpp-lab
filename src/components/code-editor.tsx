@@ -20,7 +20,6 @@ export function CodeEditor({
       <CodeMirror
         value={value}
         height="100%"
-        minHeight="320px"
         theme={oneDark}
         extensions={extensions}
         onChange={onChange}
