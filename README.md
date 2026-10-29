@@ -6,8 +6,8 @@ C++ Lab 是一個繁體中文、桌面優先的 C++ 學習網站。首頁負責�
 
 ## 已完成
 
-- 8 節從基礎語法到二分搜尋的課程
-- 12 道 C++17 練習題，題題包含五階段提示、範例與多組測資
+- 14 節課程，分為 C++ 核心基礎與字串／STL 兩階段
+- 20 道 C++17 練習題，題題包含五階段提示、範例與多組測資
 - 首頁、練習工作台、學習路線、課程內頁、進度中心、筆記與作品集說明
 - CodeMirror 6 程式編輯器
 - Judge0 隔離編譯與執行
@@ -39,7 +39,7 @@ pnpm test:e2e
 
 Playwright 預設使用電腦已安裝的 Google Chrome。
 
-實際把 12 道題目的參考解答送到 Judge0，並跑完所有測資：
+實際把 20 道題目的參考解答送到 Judge0，並跑完所有測資：
 
 ```powershell
 $env:RUN_JUDGE0_INTEGRATION='1'; pnpm exec vitest run src/content/solutions.integration.test.ts

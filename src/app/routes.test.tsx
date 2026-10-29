@@ -15,12 +15,15 @@ import NotesPage from "./notes/page";
 describe("supporting learning routes", () => {
   afterEach(() => cleanup());
 
-  it("shows all eight lessons on the learning roadmap", () => {
+  it("shows both stages on the learning roadmap", () => {
     render(<LearnPage />);
     expect(
       screen.getByRole("heading", { name: "學習路線" }),
     ).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: /第 \d+ 課/ })).toHaveLength(8);
+    expect(screen.getAllByRole("link", { name: /第 \d+ 課/ })).toHaveLength(14);
+    expect(
+      screen.getByRole("heading", { name: "第二階段：字串與 STL" }),
+    ).toBeInTheDocument();
   });
 
   it("provides personal progress, notes and project context", () => {

@@ -37,6 +37,8 @@ const categories: Array<"全部" | ExerciseCategory> = [
   "陣列",
   "函式",
   "搜尋",
+  "字串",
+  "STL",
 ];
 
 const statusLabels: Record<ExecutionResult["status"], string> = {
@@ -51,6 +53,22 @@ const statusLabels: Record<ExecutionResult["status"], string> = {
 
 function difficultyStars(level: Exercise["difficulty"]) {
   return "★".repeat(level) + "☆".repeat(3 - level);
+}
+
+function filterExerciseList(
+  category: (typeof categories)[number],
+  query: string,
+) {
+  const normalizedQuery = query.trim().toLowerCase();
+  return exercises.filter((item) => {
+    const inCategory = category === "全部" || item.category === category;
+    const inSearch =
+      !normalizedQuery ||
+      item.title.toLowerCase().includes(normalizedQuery) ||
+      item.summary.toLowerCase().includes(normalizedQuery) ||
+      item.category.toLowerCase().includes(normalizedQuery);
+    return inCategory && inSearch;
+  });
 }
 
 export function PracticeWorkspace({
@@ -85,16 +103,7 @@ export function PracticeWorkspace({
   const hintLevel = progress.hintLevels[exercise.slug] ?? 0;
 
   const filteredExercises = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    return exercises.filter((item) => {
-      const inCategory = category === "全部" || item.category === category;
-      const inSearch =
-        !normalizedQuery ||
-        item.title.toLowerCase().includes(normalizedQuery) ||
-        item.summary.toLowerCase().includes(normalizedQuery) ||
-        item.category.toLowerCase().includes(normalizedQuery);
-      return inCategory && inSearch;
-    });
+    return filterExerciseList(category, query);
   }, [category, query]);
 
   function selectExercise(nextSlug: string) {
@@ -106,6 +115,17 @@ export function PracticeWorkspace({
     setCodeOverride(saved.drafts[next.slug] ?? next.starterCode);
     setResult(null);
     setTab("result");
+  }
+
+  function selectCategory(nextCategory: (typeof categories)[number]) {
+    const matchingExercises = filterExerciseList(nextCategory, query);
+    setCategory(nextCategory);
+    if (
+      matchingExercises.length > 0 &&
+      !matchingExercises.some((item) => item.slug === selectedSlug)
+    ) {
+      selectExercise(matchingExercises[0].slug);
+    }
   }
 
   function updateCode(nextCode: string) {
@@ -217,7 +237,7 @@ export function PracticeWorkspace({
         <div className="practice-summary">
           <span>
             <Code2 size={17} />
-            12 道 C++17 練習
+            {exercises.length} 道 C++17 練習
           </span>
           <span>
             <Check size={17} />
@@ -255,7 +275,7 @@ export function PracticeWorkspace({
                   key={item}
                   type="button"
                   className={category === item ? "is-active" : undefined}
-                  onClick={() => setCategory(item)}
+                  onClick={() => selectCategory(item)}
                 >
                   <span>{item}</span>
                   <span>{count}</span>
@@ -301,6 +321,9 @@ export function PracticeWorkspace({
           <div className="problem-header">
             <div>
               <span className="exercise-kicker">{exercise.category}</span>
+              {exercise.stage === 2 ? (
+                <span className="exercise-stage-badge">第二階段</span>
+              ) : null}
               <h2 id="exercise-title">{exercise.title}</h2>
             </div>
             <span

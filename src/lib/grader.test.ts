@@ -4,6 +4,7 @@ import { gradeExercise } from "./grader";
 
 const exercise: Exercise = {
   slug: "sample",
+  stage: 1,
   title: "Sample",
   category: "基礎語法",
   difficulty: 1,

@@ -687,7 +687,7 @@ code {
 
 .roadmap-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 15px;
 }
 
@@ -1102,6 +1102,19 @@ code {
   border-radius: 999px;
   background: var(--surface-teal);
   color: var(--teal-deep);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.exercise-stage-badge {
+  display: inline-flex;
+  min-height: 23px;
+  align-items: center;
+  margin-left: 5px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #f2efe4;
+  color: #7a6124;
   font-size: 10px;
   font-weight: 700;
 }
@@ -2052,7 +2065,8 @@ code {
   gap: 13px;
 }
 
-.lesson-card-copy h2 {
+.lesson-card-copy h2,
+.lesson-card-copy h3 {
   margin: 0;
   font-size: 17px;
   font-weight: 740;
@@ -2097,6 +2111,36 @@ code {
   color: var(--teal-deep);
   font-size: 11px;
   font-weight: 700;
+}
+
+.stage-group {
+  display: grid;
+  gap: 9px;
+}
+
+.stage-group + .stage-group {
+  margin-top: 17px;
+}
+
+.stage-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 6px 3px 3px;
+}
+
+.stage-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: -0.018em;
+}
+
+.stage-heading span {
+  color: var(--muted);
+  font-size: 10px;
 }
 
 .lesson-page {

@@ -72,4 +72,15 @@ describe("practice workspace", () => {
       }),
     ).toBeInTheDocument();
   });
+
+  it("selects the first matching exercise when changing category", async () => {
+    const user = userEvent.setup();
+    render(<PracticeWorkspace initialExerciseSlug="hello-cpp-lab" />);
+
+    await user.click(screen.getByRole("button", { name: /^STL/ }));
+
+    expect(
+      screen.getByRole("heading", { name: "第一個重複單字" }),
+    ).toBeInTheDocument();
+  });
 });

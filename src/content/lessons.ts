@@ -14,6 +14,7 @@ export interface LessonQuiz {
 export interface Lesson {
   slug: string;
   number: number;
+  stage: 1 | 2;
   title: string;
   summary: string;
   duration: string;
@@ -26,6 +27,7 @@ export const lessons: Lesson[] = [
   {
     slug: "input-output-types",
     number: 1,
+    stage: 1,
     title: "輸入、輸出與資料型別",
     summary: "先看懂程式的入口，再學會讓資料進入程式、顯示結果。",
     duration: "25 分鐘",
@@ -72,6 +74,7 @@ cout << count << " " << price << " " << name;`,
   {
     slug: "conditions-and-edges",
     number: 2,
+    stage: 1,
     title: "條件判斷與邊界",
     summary: "讓程式依情況做決定，並先處理輸入的最小值、最大值與特殊案例。",
     duration: "30 分鐘",
@@ -108,6 +111,7 @@ cout << count << " " << price << " " << name;`,
   {
     slug: "loops-and-arrays",
     number: 3,
+    stage: 1,
     title: "迴圈、陣列與索引",
     summary: "用迴圈處理重複工作，用 vector 保存一連串資料。",
     duration: "40 分鐘",
@@ -139,6 +143,7 @@ for (int i = 0; i < values.size(); i++) {
   {
     slug: "functions-and-decomposition",
     number: 4,
+    stage: 1,
     title: "函式與問題拆解",
     summary: "把大問題切成可命名、可測試、可重複使用的小步驟。",
     duration: "35 分鐘",
@@ -170,6 +175,7 @@ int main() {
   {
     slug: "sorting-and-order",
     number: 5,
+    stage: 1,
     title: "排序與有序資料",
     summary: "排序不只是整理輸出，也能建立讓後續搜尋更快的「有序」前提。",
     duration: "30 分鐘",
@@ -198,6 +204,7 @@ for (int value : values) {
   {
     slug: "linear-search-complexity",
     number: 6,
+    stage: 1,
     title: "線性搜尋與時間複雜度",
     summary: "從逐項掃描開始，學會用最壞情況估計程式需要多少步驟。",
     duration: "35 分鐘",
@@ -228,6 +235,7 @@ for (int value : values) {
   {
     slug: "binary-search-invariant",
     number: 7,
+    stage: 1,
     title: "二分搜尋的不變量",
     summary: "把搜尋範圍維持為 [left, right]，每回合安全地刪掉一半。",
     duration: "45 分鐘",
@@ -262,6 +270,7 @@ return -1;`,
   {
     slug: "binary-search-debugging",
     number: 8,
+    stage: 1,
     title: "二分搜尋變體與除錯",
     summary: "處理上下界、重複值、無限迴圈與整數溢位等實際問題。",
     duration: "50 分鐘",
@@ -286,6 +295,270 @@ return -1;`,
       options: ["會改變陣列順序", "可能整數溢位", "結果一定是小數", "不能處理偶數"],
       answer: 1,
       explanation: "當 left 與 right 都很大時，加法可能超出 int 可表示的範圍。",
+    },
+  },
+  {
+    slug: "strings-basics",
+    number: 9,
+    stage: 2,
+    title: "std::string 字串基礎",
+    summary: "建立、讀取、修改與走訪 C++ 字串，處理包含空白的整行輸入。",
+    duration: "40 分鐘",
+    objectives: [
+      "使用 string 建立與串接文字",
+      "用 size 與索引走訪字元",
+      "使用 getline 讀取整行輸入",
+    ],
+    sections: [
+      {
+        title: "字串是一串可調整長度的字元",
+        body: "std::string 會自行管理容量，不需要像 C 字元陣列一樣手動配置。size() 回傳字元數量，合法索引從 0 到 size() - 1。",
+        code: `#include <string>
+string name = "C++ Lab";
+cout << name.size();       // 7
+cout << name[0];           // C
+name += "!";`,
+      },
+      {
+        title: "cin 與 getline 的差別",
+        body: "cin >> 會在空白處停止；若輸入可能包含空白，應使用 getline(cin, line)。混用 cin 與 getline 時，記得清除前一次輸入留下的換行。",
+        code: `string line;
+getline(cin, line);
+cout << "長度：" << line.size();`,
+      },
+      {
+        title: "範圍迴圈讀取字元",
+        body: "範圍迴圈能把每個字元交給 value。若需要修改原字串，請使用 char&；只讀取時則直接使用 char。",
+        code: `for (char ch : line) {
+    if (ch == 'a') count++;
+}`,
+      },
+    ],
+    quiz: {
+      question: "要讀取可能包含空格的整行文字，哪個做法最合適？",
+      options: ["cin >> text", "getline(cin, text)", "cin.get()", "text.length()"],
+      answer: 1,
+      explanation: "getline 會保留空白，直到讀到換行為止。",
+    },
+  },
+  {
+    slug: "string-search-parsing",
+    number: 10,
+    stage: 2,
+    title: "字串搜尋與解析",
+    summary: "用 find、substr 與 stringstream 拆解文字並取出需要的資料。",
+    duration: "45 分鐘",
+    objectives: [
+      "使用 find 判斷子字串是否存在",
+      "使用 substr 取出片段",
+      "用 stringstream 切分單字",
+    ],
+    sections: [
+      {
+        title: "找不到時會回傳 npos",
+        body: "string::find 回傳第一次出現的位置；找不到時回傳 string::npos。判斷時應比較 find 的結果是否等於 npos。",
+        code: `size_t position = text.find("C++");
+if (position != string::npos) {
+    cout << position;
+}`,
+      },
+      {
+        title: "用 substr 取出一段文字",
+        body: "substr(開始位置, 長度) 會建立新的字串。第二個參數可省略，表示取到字串結尾。",
+        code: `string word = "key=value";
+size_t separator = word.find('=');
+string key = word.substr(0, separator);
+string value = word.substr(separator + 1);`,
+      },
+      {
+        title: "stringstream 適合逐字解析",
+        body: "當輸入以空白分隔時，stringstream 能像 cin 一樣逐項讀取，適合處理一行中的多個單字。",
+        code: `string line = "learn cpp every day";
+stringstream stream(line);
+string word;
+while (stream >> word) {
+    cout << word << "\\n";
+}`,
+      },
+    ],
+    quiz: {
+      question: "find 找不到指定文字時會回傳什麼？",
+      options: ["0", "-1", "string::npos", "字串長度"],
+      answer: 2,
+      explanation: "string::npos 是代表找不到的特殊位置值。",
+    },
+  },
+  {
+    slug: "vector-deep-dive",
+    number: 11,
+    stage: 2,
+    title: "vector 的動態資料管理",
+    summary: "掌握 push_back、size、capacity、刪除與函式傳遞，建立可成長的資料容器。",
+    duration: "45 分鐘",
+    objectives: [
+      "使用 push_back 建立動態陣列",
+      "理解 size 與 capacity",
+      "安全地刪除與傳遞 vector",
+    ],
+    sections: [
+      {
+        title: "vector 會隨需求成長",
+        body: "push_back 會把元素加到尾端；當容量不足時，vector 會配置更大的空間。size 是元素數量，capacity 是目前不需重新配置時可容納的數量。",
+        code: `vector<int> values;
+values.push_back(4);
+values.push_back(8);
+cout << values.size(); // 2`,
+      },
+      {
+        title: "刪除元素會讓後方索引前移",
+        body: "erase 會移除指定位置的元素，後方元素向前移動，因此不能在刪除後繼續假設原本的索引不變。",
+        code: `values.erase(values.begin() + 1);
+for (int value : values) {
+    cout << value << " ";
+}`,
+      },
+      {
+        title: "傳遞 vector 時避免不必要複製",
+        body: "若函式只需要讀取，使用 const vector<T>&；若需要修改原容器，使用 vector<T>&。傳值會複製整份資料。",
+        code: `int sum(const vector<int>& values) {
+    int total = 0;
+    for (int value : values) total += value;
+    return total;
+}`,
+      },
+    ],
+    quiz: {
+      question: "函式只需要讀取 vector 時，哪種參數最合適？",
+      options: ["vector<int> values", "vector<int> values&", "const vector<int>& values", "int values"],
+      answer: 2,
+      explanation: "const 參考能避免複製，同時保證函式不修改原資料。",
+    },
+  },
+  {
+    slug: "sets-and-maps",
+    number: 12,
+    stage: 2,
+    title: "set 與 map 的查找",
+    summary: "使用有序集合去重、查找成員，並用 map 建立 key 與 value 的關聯。",
+    duration: "50 分鐘",
+    objectives: [
+      "用 set 保存不重複元素",
+      "用 map 建立鍵值資料",
+      "使用 find 與 count 安全查找",
+    ],
+    sections: [
+      {
+        title: "set 自動排序並去除重複",
+        body: "set 中每個元素最多出現一次，走訪時會依排序順序輸出。插入與查找的常見成本是 O(log n)。",
+        code: `set<int> uniqueValues;
+uniqueValues.insert(5);
+uniqueValues.insert(5);
+cout << uniqueValues.size(); // 1`,
+      },
+      {
+        title: "map 保存 key 與 value",
+        body: "map 用鍵查找對應值。使用 [] 讀取不存在的 key 會建立元素，因此只想檢查時應優先使用 find 或 count。",
+        code: `map<string, int> scores;
+scores["algorithm"] = 95;
+if (scores.find("cpp") == scores.end()) {
+    cout << "找不到";
+}`,
+      },
+      {
+        title: "更新既有計數",
+        body: "當 key 一定存在或允許新增時，scores[word]++ 能簡潔地累計次數；若不想意外插入，先用 find 找到 iterator。",
+        code: `map<string, int> frequency;
+for (const string& word : words) {
+    frequency[word]++;
+}`,
+      },
+    ],
+    quiz: {
+      question: "哪個容器最適合保存「不重複且需排序」的整數？",
+      options: ["vector<int>", "queue<int>", "set<int>", "stack<int>"],
+      answer: 2,
+      explanation: "set 會保持元素唯一並依 Comparator 排序。",
+    },
+  },
+  {
+    slug: "custom-sort-pairs",
+    number: 13,
+    stage: 2,
+    title: "pair 與自訂排序",
+    summary: "處理成對資料，使用自訂比較器控制排序欄位與同分時的順序。",
+    duration: "50 分鐘",
+    objectives: [
+      "建立與存取 pair",
+      "使用 comparator 排序資料",
+      "設計穩定且不矛盾的排序規則",
+    ],
+    sections: [
+      {
+        title: "pair 把兩個值綁在一起",
+        body: "pair 的 first 與 second 可以保存名稱與分數、座標與距離等成對資料。多個 pair 可以放進 vector。",
+        code: `vector<pair<string, int>> scores = {
+    {"Ada", 95},
+    {"Linus", 88}
+};`,
+      },
+      {
+        title: "比較器定義先後順序",
+        body: "sort 的第三個參數必須回傳「左邊是否應排在右邊之前」。比較器不能同時回傳 a < b 與 b < a，否則順序不具一致性。",
+        code: `sort(scores.begin(), scores.end(),
+    [](const auto& a, const auto& b) {
+        if (a.second != b.second) return a.second > b.second;
+        return a.first < b.first;
+    });`,
+      },
+      {
+        title: "先比較主欄位，再比較次欄位",
+        body: "當主排序值相同時，使用第二個條件決定順序。例如成績由高到低，成績相同則名稱由小到大。",
+      },
+    ],
+    quiz: {
+      question: "sort 的自訂比較器應回傳什麼？",
+      options: ["兩個元素的總和", "左元素是否應排在右元素之前", "所有元素是否相等", "元素索引"],
+      answer: 1,
+      explanation: "比較器回傳 true 時，代表左元素應排在右元素之前。",
+    },
+  },
+  {
+    slug: "binary-search-stl",
+    number: 14,
+    stage: 2,
+    title: "用 STL 實作上下界搜尋",
+    summary: "結合 lower_bound、upper_bound 與 distance，解決重複值與範圍搜尋。",
+    duration: "55 分鐘",
+    objectives: [
+      "理解 lower_bound 與 upper_bound",
+      "把 iterator 轉成索引",
+      "用上下界計算重複值範圍",
+    ],
+    sections: [
+      {
+        title: "lower_bound 找第一個不小於目標的位置",
+        body: "在已排序的 vector 中，lower_bound 會回傳第一個大於等於 target 的 iterator。若所有元素都小於 target，會回傳 end。",
+        code: `vector<int> values = {1, 3, 3, 5, 8};
+auto it = lower_bound(values.begin(), values.end(), 3);
+int index = distance(values.begin(), it); // 1`,
+      },
+      {
+        title: "upper_bound 找第一個大於目標的位置",
+        body: "upper_bound 會跳過所有等於 target 的元素，回傳第一個大於 target 的位置。兩者相減就是 target 出現次數。",
+        code: `auto first = lower_bound(values.begin(), values.end(), 3);
+auto last = upper_bound(values.begin(), values.end(), 3);
+int count = distance(first, last); // 2`,
+      },
+      {
+        title: "上下界能組合出範圍查詢",
+        body: "同一個已排序容器可以重複使用 lower_bound 與 upper_bound 處理「第一個達標位置」、「重複值範圍」與「查詢區間內元素數量」。",
+      },
+    ],
+    quiz: {
+      question: "陣列 {1, 3, 3, 5} 對 target 3 執行 upper_bound，索引為何？",
+      options: ["0", "1", "2", "3"],
+      answer: 3,
+      explanation: "upper_bound 回傳第一個大於 3 的元素位置，即索引 3 的 5。",
     },
   },
 ];

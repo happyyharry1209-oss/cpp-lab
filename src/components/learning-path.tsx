@@ -26,10 +26,10 @@ export function LearningPath() {
     <div className="learning-path">
       <div className="learning-overview">
         <div>
-          <span className="content-eyebrow">V1 核心路線</span>
+          <span className="content-eyebrow">兩階段學習路線</span>
           <h1>學習路線</h1>
           <p>
-            八節課從 C++ 基礎語法一路走到二分搜尋。你可以自由閱讀，但依序完成通常更容易建立連結。
+            十四節課從 C++ 基礎語法走到字串、STL 與二分搜尋。你可以自由閱讀，但依序完成通常更容易建立連結。
           </p>
         </div>
         <div className="overview-progress">
@@ -58,53 +58,73 @@ export function LearningPath() {
         </Link>
       </div>
 
-      <div className="lesson-list" aria-label="八節核心課程">
-        {lessons.map((lesson) => {
-          const done = progress.completedLessons.includes(lesson.slug);
-          const previousDone =
-            lesson.number === 1 ||
-            progress.completedLessons.includes(
-              lessons[lesson.number - 2]?.slug,
-            );
-          return (
-            <Link
-              className={done ? "lesson-card is-complete" : "lesson-card"}
-              href={`/learn/${lesson.slug}`}
-              key={lesson.slug}
-              aria-label={`第 ${lesson.number} 課：${lesson.title}`}
-            >
-              <span className="lesson-number">
-                {done ? <Check size={18} /> : String(lesson.number).padStart(2, "0")}
+      <div className="lesson-list" aria-label="十四節核心課程">
+        {[1, 2].map((stage) => (
+          <section className="stage-group" key={stage}>
+            <div className="stage-heading">
+              <h2>
+                {stage === 1
+                  ? "第一階段：C++ 核心基礎"
+                  : "第二階段：字串與 STL"}
+              </h2>
+              <span>
+                {lessons.filter((lesson) => lesson.stage === stage).length} 節課
               </span>
-              <div className="lesson-card-copy">
-                <div>
-                  <h2>{lesson.title}</h2>
-                  <span>
-                    <Clock3 size={13} />
-                    {lesson.duration}
-                  </span>
-                </div>
-                <p>{lesson.summary}</p>
-                <ul>
-                  {lesson.objectives.slice(0, 2).map((objective) => (
-                    <li key={objective}>{objective}</li>
-                  ))}
-                </ul>
-              </div>
-              <span className="lesson-state">
-                {done ? (
-                  "已完成"
-                ) : previousDone ? (
-                  <>
-                    開始 <ArrowRight size={15} />
-                  </>
-                ) : (
-                  <LockKeyhole size={15} aria-label="可閱讀" />
-                )}
-              </span>
-            </Link>
-          );
-        })}
+            </div>
+            {lessons
+              .filter((lesson) => lesson.stage === stage)
+              .map((lesson) => {
+                const done = progress.completedLessons.includes(lesson.slug);
+                const previousDone =
+                  lesson.number === 1 ||
+                  progress.completedLessons.includes(
+                    lessons[lesson.number - 2]?.slug,
+                  );
+                return (
+                  <Link
+                    className={done ? "lesson-card is-complete" : "lesson-card"}
+                    href={`/learn/${lesson.slug}`}
+                    key={lesson.slug}
+                    aria-label={`第 ${lesson.number} 課：${lesson.title}`}
+                  >
+                    <span className="lesson-number">
+                      {done ? (
+                        <Check size={18} />
+                      ) : (
+                        String(lesson.number).padStart(2, "0")
+                      )}
+                    </span>
+                    <div className="lesson-card-copy">
+                      <div>
+                        <h3>{lesson.title}</h3>
+                        <span>
+                          <Clock3 size={13} />
+                          {lesson.duration}
+                        </span>
+                      </div>
+                      <p>{lesson.summary}</p>
+                      <ul>
+                        {lesson.objectives.slice(0, 2).map((objective) => (
+                          <li key={objective}>{objective}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <span className="lesson-state">
+                      {done ? (
+                        "已完成"
+                      ) : previousDone ? (
+                        <>
+                          開始 <ArrowRight size={15} />
+                        </>
+                      ) : (
+                        <LockKeyhole size={15} aria-label="可閱讀" />
+                      )}
+                    </span>
+                  </Link>
+                );
+              })}
+          </section>
+        ))}
       </div>
     </div>
   );

@@ -3,7 +3,9 @@ export type ExerciseCategory =
   | "流程控制"
   | "陣列"
   | "函式"
-  | "搜尋";
+  | "搜尋"
+  | "字串"
+  | "STL";
 
 export type ExerciseDifficulty = 1 | 2 | 3;
 
@@ -14,6 +16,7 @@ export interface JudgeCase {
 
 export interface Exercise {
   slug: string;
+  stage: 1 | 2;
   title: string;
   category: ExerciseCategory;
   difficulty: ExerciseDifficulty;
@@ -42,6 +45,7 @@ int main() {
 export const exercises: Exercise[] = [
   {
     slug: "hello-cpp-lab",
+    stage: 1,
     title: "輸出 Hello, C++ Lab!",
     category: "基礎語法",
     difficulty: 1,
@@ -82,6 +86,7 @@ int main() {
   },
   {
     slug: "swap-numbers",
+    stage: 1,
     title: "交換兩個整數",
     category: "基礎語法",
     difficulty: 1,
@@ -127,6 +132,7 @@ int main() {
   },
   {
     slug: "even-or-odd",
+    stage: 1,
     title: "奇數還是偶數",
     category: "流程控制",
     difficulty: 1,
@@ -174,6 +180,7 @@ int main() {
   },
   {
     slug: "largest-of-three",
+    stage: 1,
     title: "三個數的最大值",
     category: "流程控制",
     difficulty: 2,
@@ -225,6 +232,7 @@ int main() {
   },
   {
     slug: "sum-to-n",
+    stage: 1,
     title: "從 1 加到 n",
     category: "流程控制",
     difficulty: 1,
@@ -274,6 +282,7 @@ int main() {
   },
   {
     slug: "count-positives",
+    stage: 1,
     title: "計算正數數量",
     category: "陣列",
     difficulty: 2,
@@ -330,6 +339,7 @@ int main() {
   },
   {
     slug: "reverse-array",
+    stage: 1,
     title: "反轉陣列",
     category: "陣列",
     difficulty: 2,
@@ -396,6 +406,7 @@ int main() {
   },
   {
     slug: "gcd",
+    stage: 1,
     title: "最大公因數",
     category: "函式",
     difficulty: 2,
@@ -450,6 +461,7 @@ int main() {
   },
   {
     slug: "prime-check",
+    stage: 1,
     title: "判斷質數",
     category: "函式",
     difficulty: 2,
@@ -509,6 +521,7 @@ int main() {
   },
   {
     slug: "linear-search",
+    stage: 1,
     title: "線性搜尋位置",
     category: "搜尋",
     difficulty: 2,
@@ -589,6 +602,7 @@ int main() {
   },
   {
     slug: "first-at-least",
+    stage: 1,
     title: "第一個大於等於的數",
     category: "搜尋",
     difficulty: 3,
@@ -677,6 +691,7 @@ int main() {
   },
   {
     slug: "binary-search",
+    stage: 1,
     title: "二分搜尋",
     category: "搜尋",
     difficulty: 3,
@@ -765,6 +780,634 @@ int main() {
       { input: "5\n-8 -2 0 3 9\n9", output: "4" },
     ],
     lessonSlug: "binary-search-invariant",
+  },
+  {
+    slug: "count-vowels",
+    stage: 2,
+    title: "計算母音數量",
+    category: "字串",
+    difficulty: 2,
+    summary: "走訪字串中的每個字元，計算英文母音 a、e、i、o、u。",
+    description: "讀取一行文字，計算其中英文母音 a、e、i、o、u 的數量，大小寫都算。",
+    inputFormat: "一行可能包含空白的文字。",
+    outputFormat: "輸出母音總數。",
+    starterCode: `#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string line;
+    getline(cin, line);
+    int count = 0;
+    // 走訪每個字元並判斷是否為母音
+    cout << count;
+    return 0;
+}`,
+    hints: [
+      "使用範圍迴圈可以逐一讀取字串中的 char。",
+      "a、e、i、o、u 都要計入，大寫 A、E、I、O、U 也要。",
+      "先將字元轉成小寫，可以減少要判斷的條件。",
+      "tolower 接收 char 時，先轉成 unsigned char 可以避免未定義行為。",
+      `#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string line;
+    getline(cin, line);
+    int count = 0;
+    for (char ch : line) {
+        char lower = tolower(static_cast<unsigned char>(ch));
+        if (lower == 'a' || lower == 'e' || lower == 'i'
+            || lower == 'o' || lower == 'u') {
+            count++;
+        }
+    }
+    cout << count;
+    return 0;
+}`,
+    ],
+    solution: `#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string line;
+    getline(cin, line);
+    int count = 0;
+    for (char ch : line) {
+        char lower = tolower(static_cast<unsigned char>(ch));
+        if (lower == 'a' || lower == 'e' || lower == 'i'
+            || lower == 'o' || lower == 'u') {
+            count++;
+        }
+    }
+    cout << count;
+    return 0;
+}`,
+    samples: [
+      { input: "Hello C++ World", output: "3" },
+      { input: "AEIOU", output: "5" },
+    ],
+    tests: [
+      { input: "xyz", output: "0" },
+      { input: "Binary Search", output: "4" },
+    ],
+    lessonSlug: "strings-basics",
+  },
+  {
+    slug: "word-count",
+    stage: 2,
+    title: "計算單字數量",
+    category: "字串",
+    difficulty: 2,
+    summary: "使用 stringstream 依空白切分輸入文字。",
+    description: "讀取一整行文字，輸出其中以空白分隔的單字數量。",
+    inputFormat: "一行文字。",
+    outputFormat: "輸出單字數量。",
+    starterCode: `#include <iostream>
+#include <sstream>
+#include <string>
+using namespace std;
+
+int main() {
+    string line;
+    getline(cin, line);
+    stringstream stream(line);
+    string word;
+    int count = 0;
+    // 逐一讀取單字
+    cout << count;
+    return 0;
+}`,
+    hints: [
+      "stringstream 可以像 cin 一樣用 >> 讀取。",
+      "當 stream >> word 失敗時，代表沒有更多單字。",
+      "用 while (stream >> word) 包住讀取。",
+      "每成功讀到一個 word，就把 count 加一。",
+      `#include <iostream>
+#include <sstream>
+#include <string>
+using namespace std;
+
+int main() {
+    string line;
+    getline(cin, line);
+    stringstream stream(line);
+    string word;
+    int count = 0;
+    while (stream >> word) count++;
+    cout << count;
+    return 0;
+}`,
+    ],
+    solution: `#include <iostream>
+#include <sstream>
+#include <string>
+using namespace std;
+
+int main() {
+    string line;
+    getline(cin, line);
+    stringstream stream(line);
+    string word;
+    int count = 0;
+    while (stream >> word) count++;
+    cout << count;
+    return 0;
+}`,
+    samples: [
+      { input: "learn cpp every day", output: "4" },
+      { input: "Hello", output: "1" },
+    ],
+    tests: [
+      { input: "  one   two three ", output: "3" },
+      { input: "", output: "0" },
+    ],
+    lessonSlug: "string-search-parsing",
+  },
+  {
+    slug: "first-repeated-word",
+    stage: 2,
+    title: "第一個重複單字",
+    category: "STL",
+    difficulty: 2,
+    summary: "使用 set 判斷某個單字是否已經出現。",
+    description: "輸入 n 個單字，依序找出第一個第二次出現的單字；若沒有重複，輸出 none。",
+    inputFormat: "第一行 n，接著 n 個以小寫字母組成的單字。",
+    outputFormat: "第一個重複單字，或 none。",
+    starterCode: `#include <iostream>
+#include <set>
+#include <string>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    set<string> seen;
+    for (int i = 0; i < n; i++) {
+        string word;
+        cin >> word;
+        // 判斷 word 是否已經出現
+    }
+    return 0;
+}`,
+    hints: [
+      "set 適合保存已經看過且不重複的元素。",
+      "用 seen.count(word) 判斷 word 是否已存在。",
+      "第一次重複時輸出 word，並立刻結束程式。",
+      "若迴圈結束仍沒重複，最後輸出 none。",
+      `#include <iostream>
+#include <set>
+#include <string>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    set<string> seen;
+    for (int i = 0; i < n; i++) {
+        string word;
+        cin >> word;
+        if (seen.count(word)) {
+            cout << word;
+            return 0;
+        }
+        seen.insert(word);
+    }
+    cout << "none";
+    return 0;
+}`,
+    ],
+    solution: `#include <iostream>
+#include <set>
+#include <string>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    set<string> seen;
+    for (int i = 0; i < n; i++) {
+        string word;
+        cin >> word;
+        if (seen.count(word)) {
+            cout << word;
+            return 0;
+        }
+        seen.insert(word);
+    }
+    cout << "none";
+    return 0;
+}`,
+    samples: [
+      { input: "5\napple banana apple banana cherry", output: "apple" },
+      { input: "4\none two three four", output: "none" },
+    ],
+    tests: [
+      { input: "3\na b b", output: "b" },
+      { input: "5\na a a a a", output: "a" },
+    ],
+    lessonSlug: "sets-and-maps",
+  },
+  {
+    slug: "unique-count",
+    stage: 2,
+    title: "不重複數字數量",
+    category: "STL",
+    difficulty: 1,
+    summary: "用 set 自動去除重複元素並計算不同數字數量。",
+    description: "輸入 n 個整數，輸出其中不同整數的數量。",
+    inputFormat: "第一行 n，第二行 n 個整數。",
+    outputFormat: "不同整數的數量。",
+    starterCode: `#include <iostream>
+#include <set>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    set<int> uniqueValues;
+    // 讀取資料並加入 set
+    cout << uniqueValues.size();
+    return 0;
+}`,
+    hints: [
+      "set 會自動忽略已經存在的相同數值。",
+      "讀取整數後直接 insert 到 set。",
+      "處理完所有輸入後，set.size() 就是不同數量。",
+      "不需要手動搜尋是否重複，set 會處理。",
+      `#include <iostream>
+#include <set>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    set<int> uniqueValues;
+    for (int i = 0; i < n; i++) {
+        int value;
+        cin >> value;
+        uniqueValues.insert(value);
+    }
+    cout << uniqueValues.size();
+    return 0;
+}`,
+    ],
+    solution: `#include <iostream>
+#include <set>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    set<int> uniqueValues;
+    for (int i = 0; i < n; i++) {
+        int value;
+        cin >> value;
+        uniqueValues.insert(value);
+    }
+    cout << uniqueValues.size();
+    return 0;
+}`,
+    samples: [
+      { input: "6\n1 2 2 3 3 3", output: "3" },
+      { input: "3\n-1 0 1", output: "3" },
+    ],
+    tests: [
+      { input: "5\n7 7 7 7 7", output: "1" },
+      { input: "4\n9 1 9 2", output: "3" },
+    ],
+    lessonSlug: "sets-and-maps",
+  },
+  {
+    slug: "word-frequency",
+    stage: 2,
+    title: "查詢單字出現次數",
+    category: "STL",
+    difficulty: 2,
+    summary: "使用 map 累計每個單字出現的次數。",
+    description: "輸入 n 個單字與一個查詢單字 target，輸出 target 出現的次數。",
+    inputFormat: "第一行 n，第二行 n 個單字，第三行 target。",
+    outputFormat: "target 的出現次數。",
+    starterCode: `#include <iostream>
+#include <map>
+#include <string>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    map<string, int> frequency;
+    // 讀取單字並累計
+    string target;
+    cin >> target;
+    cout << frequency[target];
+    return 0;
+}`,
+    hints: [
+      "map 可以讓單字對應到出現次數。",
+      "讀到一個單字時，執行 frequency[word]++。",
+      "最後用 frequency[target] 取得查詢次數。",
+      "若 target 從未出現，map 會回傳預設值 0。",
+      `#include <iostream>
+#include <map>
+#include <string>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    map<string, int> frequency;
+    for (int i = 0; i < n; i++) {
+        string word;
+        cin >> word;
+        frequency[word]++;
+    }
+    string target;
+    cin >> target;
+    cout << frequency[target];
+    return 0;
+}`,
+    ],
+    solution: `#include <iostream>
+#include <map>
+#include <string>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    map<string, int> frequency;
+    for (int i = 0; i < n; i++) {
+        string word;
+        cin >> word;
+        frequency[word]++;
+    }
+    string target;
+    cin >> target;
+    cout << frequency[target];
+    return 0;
+}`,
+    samples: [
+      {
+        input: "5\ncpp vector cpp map cpp\ncpp",
+        output: "3",
+      },
+      { input: "3\na b c\nd", output: "0" },
+    ],
+    tests: [
+      { input: "4\nhi hi ho hi\nhi", output: "3" },
+      { input: "1\nsolo\nsolo", output: "1" },
+    ],
+    lessonSlug: "sets-and-maps",
+  },
+  {
+    slug: "sort-scores",
+    stage: 2,
+    title: "成績排行榜",
+    category: "STL",
+    difficulty: 3,
+    summary: "使用 pair 與自訂比較器完成多欄位排序。",
+    description: "輸入每位學生的名稱與成績，依成績由高到低排序；同分時名稱依字母順序由小到大。",
+    inputFormat: "第一行 n，接著 n 行包含名稱與整數成績。",
+    outputFormat: "排序後每行輸出名稱與成績。",
+    starterCode: `#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<pair<string, int>> scores(n);
+    for (auto& item : scores) cin >> item.first >> item.second;
+    // 依成績由高到低，同分依名稱排序
+    for (const auto& item : scores) {
+        cout << item.first << " " << item.second << "\\n";
+    }
+    return 0;
+}`,
+    hints: [
+      "pair 的 first 是名稱，second 是成績。",
+      "自訂比較器要先比較 second，且分數高者排前面。",
+      "若第二個值不同，回傳 a.second > b.second。",
+      "分數相同時回傳 a.first < b.first。",
+      `#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<pair<string, int>> scores(n);
+    for (auto& item : scores) cin >> item.first >> item.second;
+    sort(scores.begin(), scores.end(),
+        [](const auto& a, const auto& b) {
+            if (a.second != b.second) return a.second > b.second;
+            return a.first < b.first;
+        });
+    for (const auto& item : scores) {
+        cout << item.first << " " << item.second << "\\n";
+    }
+    return 0;
+}`,
+    ],
+    solution: `#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<pair<string, int>> scores(n);
+    for (auto& item : scores) cin >> item.first >> item.second;
+    sort(scores.begin(), scores.end(),
+        [](const auto& a, const auto& b) {
+            if (a.second != b.second) return a.second > b.second;
+            return a.first < b.first;
+        });
+    for (const auto& item : scores) {
+        cout << item.first << " " << item.second << "\\n";
+    }
+    return 0;
+}`,
+    samples: [
+      {
+        input: "3\nBob 80\nAda 90\nCy 80",
+        output: "Ada 90\nBob 80\nCy 80",
+      },
+      {
+        input: "2\nZoe 70\nAmy 70",
+        output: "Amy 70\nZoe 70",
+      },
+    ],
+    tests: [
+      {
+        input: "3\nB 100\nA 100\nC 99",
+        output: "A 100\nB 100\nC 99",
+      },
+      {
+        input: "2\nB 1\nA 2",
+        output: "A 2\nB 1",
+      },
+    ],
+    lessonSlug: "custom-sort-pairs",
+  },
+  {
+    slug: "lower-bound-index",
+    stage: 2,
+    title: "lower_bound 的位置",
+    category: "STL",
+    difficulty: 3,
+    summary: "使用 STL 二分搜尋找出第一個不小於 target 的索引。",
+    description: "輸入一個遞增排序的陣列與 target，輸出 lower_bound 的索引；若不存在則輸出 -1。",
+    inputFormat: "第一行 n，第二行已排序的 n 個整數，第三行 target。",
+    outputFormat: "第一個大於等於 target 的索引，或 -1。",
+    starterCode: `#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> values(n);
+    for (int& value : values) cin >> value;
+    int target;
+    cin >> target;
+    // 使用 lower_bound 並輸出索引
+    return 0;
+}`,
+    hints: [
+      "lower_bound 需要已排序的容器。",
+      "它回傳的是 iterator，不是直接索引。",
+      "若 iterator 等於 values.end()，代表找不到。",
+      "使用 distance(values.begin(), it) 轉成索引。",
+      `#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> values(n);
+    for (int& value : values) cin >> value;
+    int target;
+    cin >> target;
+    auto it = lower_bound(values.begin(), values.end(), target);
+    if (it == values.end()) cout << -1;
+    else cout << distance(values.begin(), it);
+    return 0;
+}`,
+    ],
+    solution: `#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> values(n);
+    for (int& value : values) cin >> value;
+    int target;
+    cin >> target;
+    auto it = lower_bound(values.begin(), values.end(), target);
+    if (it == values.end()) cout << -1;
+    else cout << distance(values.begin(), it);
+    return 0;
+}`,
+    samples: [
+      { input: "5\n1 3 3 5 8\n4", output: "3" },
+      { input: "4\n2 4 6 8\n9", output: "-1" },
+    ],
+    tests: [
+      { input: "4\n1 2 2 5\n2", output: "1" },
+      { input: "3\n10 20 30\n15", output: "1" },
+    ],
+    lessonSlug: "binary-search-stl",
+  },
+  {
+    slug: "upper-bound-count",
+    stage: 2,
+    title: "用上下界計算出現次數",
+    category: "STL",
+    difficulty: 3,
+    summary: "結合 lower_bound 與 upper_bound 統計重複值。",
+    description: "輸入一個遞增排序的陣列與 target，使用上下界輸出 target 出現的次數。",
+    inputFormat: "第一行 n，第二行已排序的 n 個整數，第三行 target。",
+    outputFormat: "target 的出現次數。",
+    starterCode: `#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> values(n);
+    for (int& value : values) cin >> value;
+    int target;
+    cin >> target;
+    // 計算 lower_bound 到 upper_bound 的距離
+    return 0;
+}`,
+    hints: [
+      "lower_bound 找到第一個等於 target 的位置。",
+      "upper_bound 找到第一個大於 target 的位置。",
+      "這兩個 iterator 之間都等於 target。",
+      "用 distance(first, last) 取得元素數量。",
+      `#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> values(n);
+    for (int& value : values) cin >> value;
+    int target;
+    cin >> target;
+    auto first = lower_bound(values.begin(), values.end(), target);
+    auto last = upper_bound(values.begin(), values.end(), target);
+    cout << distance(first, last);
+    return 0;
+}`,
+    ],
+    solution: `#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> values(n);
+    for (int& value : values) cin >> value;
+    int target;
+    cin >> target;
+    auto first = lower_bound(values.begin(), values.end(), target);
+    auto last = upper_bound(values.begin(), values.end(), target);
+    cout << distance(first, last);
+    return 0;
+}`,
+    samples: [
+      { input: "7\n1 3 3 3 5 8 8\n3", output: "3" },
+      { input: "4\n2 4 6 8\n5", output: "0" },
+    ],
+    tests: [
+      { input: "5\n1 1 1 2 3\n1", output: "3" },
+      { input: "3\n-2 -2 -2\n-2", output: "3" },
+    ],
+    lessonSlug: "binary-search-stl",
   },
 ];
 

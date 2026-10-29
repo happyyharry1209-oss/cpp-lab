@@ -3,14 +3,21 @@ import { lessons } from "./lessons";
 import { exercises } from "./exercises";
 
 describe("C++ Lab content catalogue", () => {
-  it("ships the eight-lesson V1 learning path", () => {
-    expect(lessons).toHaveLength(8);
+  it("ships both learning stages", () => {
+    expect(lessons).toHaveLength(14);
     expect(lessons[0].slug).toBe("input-output-types");
-    expect(lessons.at(-1)?.slug).toBe("binary-search-debugging");
+    expect(lessons.at(-1)?.slug).toBe("binary-search-stl");
+    expect(lessons.filter((lesson) => lesson.stage === 2)).toHaveLength(6);
   });
 
-  it("ships twelve complete exercises", () => {
-    expect(exercises).toHaveLength(12);
+  it("ships twenty complete exercises", () => {
+    expect(exercises).toHaveLength(20);
+    expect(exercises.filter((exercise) => exercise.stage === 2)).toHaveLength(
+      8,
+    );
+  });
+
+  it("keeps every exercise complete enough for progressive learning", () => {
     for (const exercise of exercises) {
       expect(exercise.hints).toHaveLength(5);
       expect(exercise.samples.length).toBeGreaterThanOrEqual(2);

@@ -4,6 +4,7 @@ import {
   Braces,
   ChartNoAxesColumnIncreasing,
   Database,
+  Sparkles,
   Search,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -38,6 +39,13 @@ const modules = [
     icon: Search,
     firstIndex: 6,
     count: 2,
+  },
+  {
+    label: "字串與 STL",
+    detail: "字串、容器、排序與上下界",
+    icon: Sparkles,
+    firstIndex: 8,
+    count: 6,
   },
 ];
 

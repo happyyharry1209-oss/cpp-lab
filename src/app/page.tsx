@@ -8,6 +8,8 @@ import {
 import Link from "next/link";
 import { CodePreview } from "@/components/code-preview";
 import { HomeRoadmap } from "@/components/home-roadmap";
+import { exercises } from "@/content/exercises";
+import { lessons } from "@/content/lessons";
 
 const features = [
   {
@@ -22,7 +24,7 @@ const features = [
   },
   {
     title: "完整學習路線",
-    body: "從輸入輸出開始，逐步走到二分搜尋與邊界除錯。",
+    body: "從輸入輸出開始，逐步走到二分搜尋、字串與 STL。",
     icon: BookOpenCheck,
   },
   {
@@ -43,9 +45,9 @@ export default function HomePage() {
             打造你的 C++ 能力
           </h1>
           <p>
-            從輸入輸出、陣列，到二分搜尋與邊界除錯。
+            從輸入輸出、陣列，到二分搜尋、字串與 STL。
             <br />
-            用提示、實作和即時批改，走完一條真正能完成的學習路線。
+            用提示、實作和即時批改，走完兩階段、真正能完成的學習路線。
           </p>
           <div className="hero-actions">
             <Link className="primary-button" href="/practice">
@@ -59,8 +61,8 @@ export default function HomePage() {
           </div>
           <div className="hero-proof" aria-label="學習特色">
             <span>C++17</span>
-            <span>8 節核心課程</span>
-            <span>12 道實作練習</span>
+            <span>{lessons.length} 節核心課程</span>
+            <span>{exercises.length} 道實作練習</span>
           </div>
         </div>
         <CodePreview />

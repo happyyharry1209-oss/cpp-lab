@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { Lesson } from "@/content/lessons";
 import { lessons } from "@/content/lessons";
+import { exercises } from "@/content/exercises";
 import { useLocalProgress } from "@/hooks/use-local-progress";
 import { uniquePush } from "@/lib/progress";
 
@@ -158,7 +159,7 @@ export function LessonReader({ lesson }: { lesson: Lesson }) {
             <Link href="/practice">
               <span>
                 <small>進入練習</small>
-                12 道 C++ 題目
+                {exercises.length} 道 C++ 題目
               </span>
               <ArrowRight size={16} />
             </Link>

@@ -87,7 +87,7 @@ export default function AboutPage() {
       <footer className="about-footer">
         <div>
           <h2>下一步</h2>
-          <p>加入更多語法、STL、資料結構與專案型練習。</p>
+          <p>下一階段將加入資料結構、物件導向與專案型實作。</p>
         </div>
         <a className="primary-button" href="/practice">
           回到練習工作台

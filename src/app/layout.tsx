@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: "%s｜C++ Lab",
   },
   description:
-    "一個為 C++ 初學者設計的互動學習網站，從語法、陣列到二分搜尋，透過提示與即時批改逐步建立程式能力。",
+    "一個為 C++ 初學者設計的互動學習網站，從語法、陣列到二分搜尋、字串與 STL，透過提示與即時批改逐步建立程式能力。",
 };
 
 export default function RootLayout({

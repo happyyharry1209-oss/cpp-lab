@@ -91,6 +91,25 @@ test("lesson content remains readable on a narrow viewport", async ({ page }) =>
   expect(errors).toEqual([]);
 });
 
+test("second-stage lessons and STL exercises are discoverable", async ({
+  page,
+}) => {
+  const errors = captureRuntimeErrors(page);
+  await page.goto("/learn");
+  await expect(
+    page.getByRole("heading", { name: "第二階段：字串與 STL" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /第 9 課：std::string 字串基礎/ }),
+  ).toBeVisible();
+
+  await page.goto("/practice");
+  await expect(page.getByText("20 道 C++17 練習")).toBeVisible();
+  await page.getByRole("button", { name: /^STL/ }).click();
+  await expect(page.getByText("lower_bound 的位置")).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test("login setup remains clear before Supabase is configured", async ({
   page,
 }) => {
