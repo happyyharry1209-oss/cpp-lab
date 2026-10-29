@@ -112,6 +112,52 @@ test("long code scrolls inside the editor", async ({ page }) => {
     .toBeGreaterThan(0);
 });
 
+test("focus mode enlarges the editor and preserves the code", async ({
+  page,
+}) => {
+  await page.goto("/practice?exercise=hello-cpp-lab");
+  const editor = page.locator(".cm-content");
+  await editor.click();
+  await page.keyboard.press("Control+A");
+  await page.keyboard.insertText("// focus mode keeps this code");
+
+  const editorPanel = page.locator(".workspace-editor-panel");
+  const beforeWidth = (await editorPanel.boundingBox())?.width ?? 0;
+  await page.getByRole("button", { name: "專注模式" }).click();
+
+  await expect(page.locator("header.site-header")).toBeHidden();
+  await expect(page.locator("aside.exercise-library")).toBeHidden();
+  await expect(page.locator("header.practice-page-heading")).toBeHidden();
+  await expect(
+    page.getByRole("button", { name: "離開專注模式" }),
+  ).toBeVisible();
+  await expect(editor).toContainText("// focus mode keeps this code");
+
+  const focusedWidth = (await editorPanel.boundingBox())?.width ?? 0;
+  expect(focusedWidth).toBeGreaterThan(beforeWidth);
+
+  await page.keyboard.press("Escape");
+  await expect(page.locator("header.site-header")).toBeVisible();
+  await expect(page.locator("aside.exercise-library")).toBeVisible();
+  await expect(editor).toContainText("// focus mode keeps this code");
+});
+
+test("focus mode keeps execution controls visible on mobile", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/practice");
+  await page.getByRole("button", { name: "專注模式" }).click();
+
+  await expect(
+    page.getByRole("button", { name: "執行測試" }),
+  ).toBeVisible();
+  const panelBottom = await page
+    .locator(".workspace-editor-panel")
+    .evaluate((element) => element.getBoundingClientRect().bottom);
+  expect(panelBottom).toBeLessThanOrEqual(845);
+});
+
 test("lesson content remains readable on a narrow viewport", async ({ page }) => {
   const errors = captureRuntimeErrors(page);
   await page.setViewportSize({ width: 390, height: 844 });

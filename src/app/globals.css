@@ -3646,3 +3646,152 @@ code {
     min-height: 320px;
   }
 }
+
+.focus-mode-button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 11px;
+  border: 1px solid #c9dfdb;
+  border-radius: 7px;
+  background: var(--surface-teal);
+  color: var(--teal-deep);
+  cursor: pointer;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.focus-mode-button:hover {
+  border-color: var(--teal);
+}
+
+html.practice-focus-mode,
+html.practice-focus-mode body {
+  overflow: hidden;
+}
+
+html.practice-focus-mode .site-header {
+  display: none;
+}
+
+.practice-page.is-focus-mode {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  padding: 0;
+  background: var(--page);
+}
+
+.focus-mode-toolbar {
+  display: flex;
+  height: 46px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+}
+
+.focus-mode-toolbar > span {
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.focus-mode-toolbar button {
+  display: inline-flex;
+  min-height: 32px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.focus-mode-toolbar button:hover {
+  border-color: var(--teal);
+  color: var(--teal-deep);
+}
+
+.practice-page.is-focus-mode .practice-page-heading,
+.practice-page.is-focus-mode .exercise-library,
+.practice-page.is-focus-mode .solution-guide,
+.practice-page.is-focus-mode .hint-panel,
+.practice-page.is-focus-mode .problem-next,
+.practice-page.is-focus-mode .more-samples {
+  display: none;
+}
+
+.practice-page.is-focus-mode .practice-layout {
+  height: calc(100dvh - 46px);
+  min-height: 0;
+  max-height: none;
+  grid-template-columns: minmax(300px, 35fr) minmax(0, 65fr);
+  gap: 0;
+}
+
+.practice-page.is-focus-mode .problem-panel,
+.practice-page.is-focus-mode .workspace-editor-panel {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.practice-page.is-focus-mode .problem-panel {
+  padding: 22px;
+}
+
+.practice-page.is-focus-mode .workspace-editor-panel {
+  height: 100%;
+  min-height: 0;
+  grid-column: auto;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.practice-page.is-focus-mode .result-panel.is-empty {
+  display: none;
+}
+
+.practice-page.is-focus-mode .result-panel.has-result {
+  height: 190px;
+  min-height: 190px;
+  flex-basis: 190px;
+}
+
+@media (max-width: 760px) {
+  .practice-summary {
+    width: 100%;
+  }
+
+  .focus-mode-button {
+    margin-left: auto;
+  }
+
+  .practice-page.is-focus-mode .practice-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(180px, 34dvh) minmax(0, 1fr);
+  }
+
+  .practice-page.is-focus-mode .problem-panel {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .focus-mode-toolbar > span {
+    max-width: 66vw;
+  }
+}

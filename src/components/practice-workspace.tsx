@@ -10,6 +10,8 @@ import {
   Filter,
   Gauge,
   ListChecks,
+  Maximize2,
+  Minimize2,
   Play,
   RotateCcw,
   Search,
@@ -18,7 +20,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   exercises,
   type Exercise,
@@ -106,6 +108,7 @@ export function PracticeWorkspace({
   const [result, setResult] = useState<ExecutionResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [tab, setTab] = useState<"result" | "output">("result");
+  const [focusMode, setFocusMode] = useState(false);
   const { progress, save: saveProgress } = useLocalProgress();
 
   const exercise = useMemo(
@@ -122,6 +125,30 @@ export function PracticeWorkspace({
     progress.drafts[exercise.slug] ??
     exercise.starterCode;
   const hintLevel = progress.hintLevels[exercise.slug] ?? 0;
+
+  useEffect(() => {
+    document.documentElement.classList.toggle(
+      "practice-focus-mode",
+      focusMode,
+    );
+    return () => {
+      document.documentElement.classList.remove("practice-focus-mode");
+    };
+  }, [focusMode]);
+
+  useEffect(() => {
+    if (!focusMode) {
+      return;
+    }
+
+    const exitOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setFocusMode(false);
+      }
+    };
+    window.addEventListener("keydown", exitOnEscape);
+    return () => window.removeEventListener("keydown", exitOnEscape);
+  }, [focusMode]);
 
   const filteredExercises = useMemo(() => {
     return filterExerciseList(category, query, stage, difficulty);
@@ -283,7 +310,7 @@ export function PracticeWorkspace({
   const completed = progress.completedExercises.includes(exercise.slug);
 
   return (
-    <div className="practice-page">
+    <div className={focusMode ? "practice-page is-focus-mode" : "practice-page"}>
       <header className="practice-page-heading">
         <div>
           <p className="breadcrumb">
@@ -301,8 +328,29 @@ export function PracticeWorkspace({
             <Check size={17} />
             {progress.completedExercises.length} 題已完成
           </span>
+          <button
+            type="button"
+            className="focus-mode-button"
+            onClick={() => setFocusMode(true)}
+          >
+            <Maximize2 size={15} />
+            專注模式
+          </button>
         </div>
       </header>
+
+      {focusMode ? (
+        <div className="focus-mode-toolbar">
+          <span>
+            專注模式 · 第 {exercise.stage === 1 ? "一" : "二"}階段 ·{" "}
+            {exercise.title}
+          </span>
+          <button type="button" onClick={() => setFocusMode(false)}>
+            <Minimize2 size={15} />
+            離開專注模式
+          </button>
+        </div>
+      ) : null}
 
       <div className="practice-layout">
         <aside className="exercise-library" aria-label="題目列表">
@@ -587,7 +635,12 @@ export function PracticeWorkspace({
             </div>
           </div>
 
-          <div className="result-panel" aria-live="polite">
+          <div
+            className={
+              result ? "result-panel has-result" : "result-panel is-empty"
+            }
+            aria-live="polite"
+          >
             <div className="result-tabs">
               <button
                 type="button"
