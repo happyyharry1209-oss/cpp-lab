@@ -2,6 +2,7 @@
 
 import {
   ArrowRight,
+  BookOpen,
   Check,
   ChevronRight,
   Clock3,
@@ -13,12 +14,14 @@ import {
   Send,
   TerminalSquare,
 } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   exercises,
   type Exercise,
   type ExerciseCategory,
 } from "@/content/exercises";
+import { getLesson } from "@/content/lessons";
 import type { ExecutionResult } from "@/lib/judge";
 import {
   getNextHintLevel,
@@ -41,6 +44,9 @@ const categories: Array<"全部" | ExerciseCategory> = [
   "STL",
 ];
 
+type StageFilter = "all" | "1" | "2";
+type DifficultyFilter = "all" | "1" | "2" | "3";
+
 const statusLabels: Record<ExecutionResult["status"], string> = {
   accepted: "測試通過",
   compile_error: "編譯失敗",
@@ -58,16 +64,21 @@ function difficultyStars(level: Exercise["difficulty"]) {
 function filterExerciseList(
   category: (typeof categories)[number],
   query: string,
+  stage: StageFilter,
+  difficulty: DifficultyFilter,
 ) {
   const normalizedQuery = query.trim().toLowerCase();
   return exercises.filter((item) => {
     const inCategory = category === "全部" || item.category === category;
+    const inStage = stage === "all" || item.stage === Number(stage);
+    const inDifficulty =
+      difficulty === "all" || item.difficulty === Number(difficulty);
     const inSearch =
       !normalizedQuery ||
       item.title.toLowerCase().includes(normalizedQuery) ||
       item.summary.toLowerCase().includes(normalizedQuery) ||
       item.category.toLowerCase().includes(normalizedQuery);
-    return inCategory && inSearch;
+    return inCategory && inStage && inDifficulty && inSearch;
   });
 }
 
@@ -84,6 +95,9 @@ export function PracticeWorkspace({
   const [selectedSlug, setSelectedSlug] = useState(initialExercise.slug);
   const [category, setCategory] =
     useState<(typeof categories)[number]>("全部");
+  const [stage, setStage] = useState<StageFilter>("all");
+  const [difficulty, setDifficulty] =
+    useState<DifficultyFilter>("all");
   const [query, setQuery] = useState(initialQuery);
   const [codeOverride, setCodeOverride] = useState<string | null>(null);
   const [result, setResult] = useState<ExecutionResult | null>(null);
@@ -95,6 +109,10 @@ export function PracticeWorkspace({
     () => exercises.find((item) => item.slug === selectedSlug) ?? exercises[0],
     [selectedSlug],
   );
+  const relatedLesson = useMemo(
+    () => getLesson(exercise.lessonSlug),
+    [exercise.lessonSlug],
+  );
 
   const code =
     codeOverride ??
@@ -103,8 +121,8 @@ export function PracticeWorkspace({
   const hintLevel = progress.hintLevels[exercise.slug] ?? 0;
 
   const filteredExercises = useMemo(() => {
-    return filterExerciseList(category, query);
-  }, [category, query]);
+    return filterExerciseList(category, query, stage, difficulty);
+  }, [category, difficulty, query, stage]);
 
   function selectExercise(nextSlug: string) {
     const next = exercises.find((item) => item.slug === nextSlug);
@@ -118,8 +136,45 @@ export function PracticeWorkspace({
   }
 
   function selectCategory(nextCategory: (typeof categories)[number]) {
-    const matchingExercises = filterExerciseList(nextCategory, query);
+    const matchingExercises = filterExerciseList(
+      nextCategory,
+      query,
+      stage,
+      difficulty,
+    );
     setCategory(nextCategory);
+    if (
+      matchingExercises.length > 0 &&
+      !matchingExercises.some((item) => item.slug === selectedSlug)
+    ) {
+      selectExercise(matchingExercises[0].slug);
+    }
+  }
+
+  function selectStage(nextStage: StageFilter) {
+    const matchingExercises = filterExerciseList(
+      category,
+      query,
+      nextStage,
+      difficulty,
+    );
+    setStage(nextStage);
+    if (
+      matchingExercises.length > 0 &&
+      !matchingExercises.some((item) => item.slug === selectedSlug)
+    ) {
+      selectExercise(matchingExercises[0].slug);
+    }
+  }
+
+  function selectDifficulty(nextDifficulty: DifficultyFilter) {
+    const matchingExercises = filterExerciseList(
+      category,
+      query,
+      stage,
+      nextDifficulty,
+    );
+    setDifficulty(nextDifficulty);
     if (
       matchingExercises.length > 0 &&
       !matchingExercises.some((item) => item.slug === selectedSlug)
@@ -263,6 +318,38 @@ export function PracticeWorkspace({
             />
           </label>
 
+          <div className="workspace-filter-row">
+            <label>
+              <span>階段</span>
+              <select
+                aria-label="篩選學習階段"
+                value={stage}
+                onChange={(event) =>
+                  selectStage(event.target.value as StageFilter)
+                }
+              >
+                <option value="all">全部階段</option>
+                <option value="1">第一階段</option>
+                <option value="2">第二階段</option>
+              </select>
+            </label>
+            <label>
+              <span>難度</span>
+              <select
+                aria-label="篩選題目難度"
+                value={difficulty}
+                onChange={(event) =>
+                  selectDifficulty(event.target.value as DifficultyFilter)
+                }
+              >
+                <option value="all">全部難度</option>
+                <option value="1">入門</option>
+                <option value="2">基礎</option>
+                <option value="3">進階</option>
+              </select>
+            </label>
+          </div>
+
           <div className="category-list" aria-label="題目分類">
             {categories.map((item) => {
               const count =
@@ -325,6 +412,15 @@ export function PracticeWorkspace({
                 <span className="exercise-stage-badge">第二階段</span>
               ) : null}
               <h2 id="exercise-title">{exercise.title}</h2>
+              {relatedLesson ? (
+                <Link
+                  className="related-lesson-link"
+                  href={`/learn/${relatedLesson.slug}`}
+                >
+                  <BookOpen size={13} />
+                  回顧第 {relatedLesson.number} 課：{relatedLesson.title}
+                </Link>
+              ) : null}
             </div>
             <span
               className="difficulty"

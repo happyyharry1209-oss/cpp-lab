@@ -83,4 +83,25 @@ describe("practice workspace", () => {
       screen.getByRole("heading", { name: "第一個重複單字" }),
     ).toBeInTheDocument();
   });
+
+  it("filters by learning stage and difficulty", async () => {
+    const user = userEvent.setup();
+    render(<PracticeWorkspace initialExerciseSlug="hello-cpp-lab" />);
+
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "篩選學習階段" }),
+      "2",
+    );
+    expect(
+      screen.getByRole("heading", { name: "計算母音數量" }),
+    ).toBeInTheDocument();
+
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "篩選題目難度" }),
+      "1",
+    );
+    expect(
+      screen.getByRole("heading", { name: "不重複數字數量" }),
+    ).toBeInTheDocument();
+  });
 });

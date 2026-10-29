@@ -6,6 +6,7 @@ import {
   Check,
   CheckCircle2,
   Clock3,
+  Code2,
   Lightbulb,
 } from "lucide-react";
 import Link from "next/link";
@@ -22,6 +23,9 @@ export function LessonReader({ lesson }: { lesson: Lesson }) {
   const completed = progress.completedLessons.includes(lesson.slug);
   const previous = lessons[lesson.number - 2];
   const next = lessons[lesson.number];
+  const recommendedExercise = exercises.find(
+    (exercise) => exercise.slug === lesson.recommendedExerciseSlug,
+  );
 
   function markComplete() {
     save({
@@ -134,6 +138,25 @@ export function LessonReader({ lesson }: { lesson: Lesson }) {
             {completed ? "已完成" : "標記本課完成"}
           </button>
         </div>
+
+        {recommendedExercise ? (
+          <Link
+            className="recommended-practice"
+            href={`/practice?exercise=${recommendedExercise.slug}`}
+          >
+            <span className="recommended-practice-icon">
+              <Code2 size={20} />
+            </span>
+            <span>
+              <small>學完這一課，試試看</small>
+              <strong>{recommendedExercise.title}</strong>
+              <p>{recommendedExercise.summary}</p>
+            </span>
+            <span className="recommended-practice-action">
+              開始練習 <ArrowRight size={16} />
+            </span>
+          </Link>
+        ) : null}
 
         <nav className="lesson-pagination" aria-label="課程翻頁">
           {previous ? (

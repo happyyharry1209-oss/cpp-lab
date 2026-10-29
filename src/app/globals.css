@@ -961,6 +961,39 @@ code {
   font-size: 12px;
 }
 
+.workspace-filter-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.workspace-filter-row label {
+  display: grid;
+  gap: 4px;
+}
+
+.workspace-filter-row label > span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.workspace-filter-row select {
+  width: 100%;
+  height: 31px;
+  padding: 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: 0;
+  background: var(--surface-soft);
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.workspace-filter-row select:focus {
+  border-color: var(--teal);
+}
+
 .category-list {
   display: grid;
   gap: 2px;
@@ -1124,6 +1157,21 @@ code {
   font-size: 18px;
   font-weight: 750;
   letter-spacing: -0.02em;
+}
+
+.related-lesson-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 9px;
+  color: var(--teal-deep);
+  font-size: 9.5px;
+  font-weight: 650;
+}
+
+.related-lesson-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .difficulty {
@@ -2409,6 +2457,65 @@ code {
   font-size: 10.5px;
 }
 
+.recommended-practice {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 19px 21px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.recommended-practice:hover {
+  border-color: #bcd8d3;
+  transform: translateY(-1px);
+}
+
+.recommended-practice-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-teal);
+  color: var(--teal-deep);
+}
+
+.recommended-practice small {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.recommended-practice strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+}
+
+.recommended-practice p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.recommended-practice-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--teal-deep);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .lesson-pagination {
   display: flex;
   align-items: center;
@@ -3265,6 +3372,14 @@ code {
   .route-callout {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .recommended-practice {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .recommended-practice-action {
+    grid-column: 2;
   }
 
   .about-story {

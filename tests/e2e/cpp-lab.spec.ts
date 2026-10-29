@@ -106,7 +106,33 @@ test("second-stage lessons and STL exercises are discoverable", async ({
   await page.goto("/practice");
   await expect(page.getByText("20 道 C++17 練習")).toBeVisible();
   await page.getByRole("button", { name: /^STL/ }).click();
-  await expect(page.getByText("lower_bound 的位置")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "第一個重複單字" }),
+  ).toBeVisible();
+  await page
+    .getByRole("combobox", { name: "篩選題目難度" })
+    .selectOption("1");
+  await expect(
+    page.getByRole("heading", { name: "不重複數字數量" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /回顧第 12 課：set 與 map 的查找/ }),
+  ).toHaveAttribute("href", "/learn/sets-and-maps");
+  expect(errors).toEqual([]);
+});
+
+test("a lesson recommends its next practice exercise", async ({ page }) => {
+  const errors = captureRuntimeErrors(page);
+  await page.goto("/learn/strings-basics");
+
+  const recommended = page.getByRole("link", {
+    name: /學完這一課，試試看.*計算母音數量/,
+  });
+  await expect(recommended).toBeVisible();
+  await expect(recommended).toHaveAttribute(
+    "href",
+    "/practice?exercise=count-vowels",
+  );
   expect(errors).toEqual([]);
 });
 

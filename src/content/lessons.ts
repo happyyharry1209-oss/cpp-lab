@@ -18,6 +18,7 @@ export interface Lesson {
   title: string;
   summary: string;
   duration: string;
+  recommendedExerciseSlug: string;
   objectives: string[];
   sections: LessonSection[];
   quiz: LessonQuiz;
@@ -31,6 +32,7 @@ export const lessons: Lesson[] = [
     title: "輸入、輸出與資料型別",
     summary: "先看懂程式的入口，再學會讓資料進入程式、顯示結果。",
     duration: "25 分鐘",
+    recommendedExerciseSlug: "hello-cpp-lab",
     objectives: [
       "辨認 main 函式的角色",
       "使用 cin 與 cout",
@@ -78,6 +80,7 @@ cout << count << " " << price << " " << name;`,
     title: "條件判斷與邊界",
     summary: "讓程式依情況做決定，並先處理輸入的最小值、最大值與特殊案例。",
     duration: "30 分鐘",
+    recommendedExerciseSlug: "even-or-odd",
     objectives: ["撰寫 if/else", "比較數值與字元", "辨認常見邊界案例"],
     sections: [
       {
@@ -115,6 +118,7 @@ cout << count << " " << price << " " << name;`,
     title: "迴圈、陣列與索引",
     summary: "用迴圈處理重複工作，用 vector 保存一連串資料。",
     duration: "40 分鐘",
+    recommendedExerciseSlug: "sum-to-n",
     objectives: ["使用 for 與 while", "建立與走訪 vector", "理解索引從 0 開始"],
     sections: [
       {
@@ -147,6 +151,7 @@ for (int i = 0; i < values.size(); i++) {
     title: "函式與問題拆解",
     summary: "把大問題切成可命名、可測試、可重複使用的小步驟。",
     duration: "35 分鐘",
+    recommendedExerciseSlug: "gcd",
     objectives: ["定義與呼叫函式", "選擇參數與回傳值", "用函式描述解題步驟"],
     sections: [
       {
@@ -179,6 +184,7 @@ int main() {
     title: "排序與有序資料",
     summary: "排序不只是整理輸出，也能建立讓後續搜尋更快的「有序」前提。",
     duration: "30 分鐘",
+    recommendedExerciseSlug: "sort-scores",
     objectives: ["使用 sort", "理解遞增與遞減", "說明排序帶來的機會與成本"],
     sections: [
       {
@@ -208,6 +214,7 @@ for (int value : values) {
     title: "線性搜尋與時間複雜度",
     summary: "從逐項掃描開始，學會用最壞情況估計程式需要多少步驟。",
     duration: "35 分鐘",
+    recommendedExerciseSlug: "linear-search",
     objectives: ["實作線性搜尋", "讀懂 O(n)", "判斷何時需要更快的搜尋"],
     sections: [
       {
@@ -239,6 +246,7 @@ for (int value : values) {
     title: "二分搜尋的不變量",
     summary: "把搜尋範圍維持為 [left, right]，每回合安全地刪掉一半。",
     duration: "45 分鐘",
+    recommendedExerciseSlug: "binary-search",
     objectives: ["解釋二分搜尋區間", "計算 mid", "追蹤 left 與 right 的更新"],
     sections: [
       {
@@ -274,6 +282,7 @@ return -1;`,
     title: "二分搜尋變體與除錯",
     summary: "處理上下界、重複值、無限迴圈與整數溢位等實際問題。",
     duration: "50 分鐘",
+    recommendedExerciseSlug: "first-at-least",
     objectives: ["找出無限迴圈原因", "安全計算 mid", "辨認 lower bound 類問題"],
     sections: [
       {
@@ -304,6 +313,7 @@ return -1;`,
     title: "std::string 字串基礎",
     summary: "建立、讀取、修改與走訪 C++ 字串，處理包含空白的整行輸入。",
     duration: "40 分鐘",
+    recommendedExerciseSlug: "count-vowels",
     objectives: [
       "使用 string 建立與串接文字",
       "用 size 與索引走訪字元",
@@ -348,6 +358,7 @@ cout << "長度：" << line.size();`,
     title: "字串搜尋與解析",
     summary: "用 find、substr 與 stringstream 拆解文字並取出需要的資料。",
     duration: "45 分鐘",
+    recommendedExerciseSlug: "word-count",
     objectives: [
       "使用 find 判斷子字串是否存在",
       "使用 substr 取出片段",
@@ -395,6 +406,7 @@ while (stream >> word) {
     title: "vector 的動態資料管理",
     summary: "掌握 push_back、size、capacity、刪除與函式傳遞，建立可成長的資料容器。",
     duration: "45 分鐘",
+    recommendedExerciseSlug: "reverse-array",
     objectives: [
       "使用 push_back 建立動態陣列",
       "理解 size 與 capacity",
@@ -441,6 +453,7 @@ for (int value : values) {
     title: "set 與 map 的查找",
     summary: "使用有序集合去重、查找成員，並用 map 建立 key 與 value 的關聯。",
     duration: "50 分鐘",
+    recommendedExerciseSlug: "word-frequency",
     objectives: [
       "用 set 保存不重複元素",
       "用 map 建立鍵值資料",
@@ -487,6 +500,7 @@ for (const string& word : words) {
     title: "pair 與自訂排序",
     summary: "處理成對資料，使用自訂比較器控制排序欄位與同分時的順序。",
     duration: "50 分鐘",
+    recommendedExerciseSlug: "sort-scores",
     objectives: [
       "建立與存取 pair",
       "使用 comparator 排序資料",
@@ -529,6 +543,7 @@ for (const string& word : words) {
     title: "用 STL 實作上下界搜尋",
     summary: "結合 lower_bound、upper_bound 與 distance，解決重複值與範圍搜尋。",
     duration: "55 分鐘",
+    recommendedExerciseSlug: "lower-bound-index",
     objectives: [
       "理解 lower_bound 與 upper_bound",
       "把 iterator 轉成索引",

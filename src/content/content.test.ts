@@ -23,6 +23,19 @@ describe("C++ Lab content catalogue", () => {
       expect(exercise.samples.length).toBeGreaterThanOrEqual(2);
       expect(exercise.tests.length).toBeGreaterThanOrEqual(2);
       expect(exercise.solution.length).toBeGreaterThan(20);
+      expect(
+        lessons.some((lesson) => lesson.slug === exercise.lessonSlug),
+      ).toBe(true);
+    }
+  });
+
+  it("recommends an existing exercise after every lesson", () => {
+    for (const lesson of lessons) {
+      expect(
+        exercises.some(
+          (exercise) => exercise.slug === lesson.recommendedExerciseSlug,
+        ),
+      ).toBe(true);
     }
   });
 });
