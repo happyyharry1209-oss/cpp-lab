@@ -133,3 +133,26 @@ test("GitHub login starts a PKCE authorization request", async ({ page }) => {
     "/auth/callback",
   );
 });
+
+test("guest submissions are rejected when cloud auth is enabled", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/login");
+  if ((await page.locator(".github-signin").count()) === 0) {
+    test.skip(true, "Supabase is not configured in this environment");
+  }
+
+  const response = await request.post("/api/submit", {
+    data: {
+      exerciseId: "hello-cpp-lab",
+      sourceCode:
+        '#include <iostream>\nint main(){std::cout << "Hello, C++ Lab!";}',
+    },
+  });
+
+  expect(response.status()).toBe(401);
+  await expect(response.json()).resolves.toMatchObject({
+    error: "請先使用 GitHub 登入。",
+  });
+});
