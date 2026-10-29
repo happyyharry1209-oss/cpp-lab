@@ -2,6 +2,9 @@ export interface LessonSection {
   title: string;
   body: string;
   code?: string;
+  trace?: string[];
+  pitfalls?: string[];
+  keyPoints?: string[];
 }
 
 export interface LessonQuiz {
@@ -22,9 +25,32 @@ export interface Lesson {
   objectives: string[];
   sections: LessonSection[];
   quiz: LessonQuiz;
+  quizzes: LessonQuiz[];
 }
 
-export const lessons: Lesson[] = [
+type LessonCore = Omit<Lesson, "quizzes">;
+
+interface LessonEnrichment {
+  example: {
+    intro: string;
+    code: string;
+  };
+  trace: {
+    intro: string;
+    states: string[];
+  };
+  mistakes: {
+    intro: string;
+    items: string[];
+  };
+  summary: {
+    intro: string;
+    points: string[];
+  };
+  quiz: LessonQuiz;
+}
+
+const lessonCores: LessonCore[] = [
   {
     slug: "input-output-types",
     number: 1,
@@ -577,6 +603,700 @@ int count = distance(first, last); // 2`,
     },
   },
 ];
+
+const lessonEnrichments: Record<string, LessonEnrichment> = {
+  "input-output-types": {
+    example: {
+      intro: "把輸入、計算與輸出拆成三個獨立步驟，這是後續所有題目的最小程式骨架。",
+      code: `#include <iostream>
+using namespace std;
+
+int main() {
+    int a, b;
+    cin >> a >> b;
+    int sum = a + b;
+    cout << sum << endl;
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "假設輸入為 7 與 5，追蹤每個變數：",
+      states: [
+        "第 2 行：cout 顯示文字與數值都需要使用 <<。",
+        "cin 讀取後：a = 7、b = 5，兩者都是整數。",
+        "計算後：sum = 12；最後輸出 12。",
+      ],
+    },
+    mistakes: {
+      intro: "輸入輸出題目看似簡單，但錯一個字元就會讓批改失敗。",
+      items: [
+        "漏掉 #include <iostream> 時，cin 與 cout 無法使用。",
+        "把整數除法 7 / 2 當成小數運算時，結果會是 3 而不是 3.5。",
+      ],
+    },
+    summary: {
+      intro: "先確認資料怎麼進來、要用什麼型別保存，最後再決定怎麼輸出。",
+      points: [
+        "main 是程式入口，return 0 表示正常結束。",
+        "cin 會依空白切分輸入，型別必須與資料相符。",
+        "輸出的空格、換行與大小寫都屬於答案的一部分。",
+      ],
+    },
+    quiz: {
+      question: "執行 int result = 7 / 2; 後，result 的值是多少？",
+      options: ["3.5", "3", "4", "編譯錯誤"],
+      answer: 1,
+      explanation: "兩個 int 相除會執行整數除法，小數部分被截斷。",
+    },
+  },
+  "conditions-and-edges": {
+    example: {
+      intro: "用同一組條件依序判斷成績區間，並把 0、59、60 這些邊界想清楚。",
+      code: `#include <iostream>
+using namespace std;
+
+int main() {
+    int score;
+    cin >> score;
+    if (score >= 90) cout << "A";
+    else if (score >= 60) cout << "Pass";
+    else cout << "Retry";
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "假設 score = 60，條件會由上往下檢查：",
+      states: [
+        "score >= 90 不成立，因為 60 不小於 90。",
+        "score >= 60 成立，因此輸出 Pass。",
+        "後面的 else 不會再執行，條件分支只會選一條。",
+      ],
+    },
+    mistakes: {
+      intro: "條件判斷的錯誤通常來自比較符號與判斷順序。",
+      items: [
+        "把比較運算 == 寫成賦值運算 =，會改變變數而不是判斷相等。",
+        "先判斷較寬的條件，會讓後面的特殊情況永遠無法執行。",
+      ],
+    },
+    summary: {
+      intro: "先把所有可能情況寫出來，再排列成互斥且完整的條件。",
+      points: [
+        "邊界值通常要使用 >= 或 <=，不要漏掉等號。",
+        "若條件具有先後關係，較具體的情況應先檢查。",
+        "布林結果只能回答 true 或 false，不能同時進入兩個 else 分支。",
+      ],
+    },
+    quiz: {
+      question: "哪個條件能正確判斷負奇數與正奇數？",
+      options: ["x % 2 == 1", "x % 2 != 0", "x / 2 == 1", "x == 1"],
+      answer: 1,
+      explanation: "負奇數的餘數可能是 -1，因此使用 != 0 比 == 1 更完整。",
+    },
+  },
+  "loops-and-arrays": {
+    example: {
+      intro: "逐項讀取資料並加總，可以同時練習索引與迴圈邊界。",
+      code: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> values(n);
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+        cin >> values[i];
+        sum += values[i];
+    }
+    cout << sum;
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "輸入 n = 3、資料為 4 8 1：",
+      states: [
+        "i = 0：讀入 values[0] = 4，sum 變成 4。",
+        "i = 1：讀入 values[1] = 8，sum 變成 12。",
+        "i = 2：讀入 values[2] = 1，sum 變成 13，之後迴圈停止。",
+      ],
+    },
+    mistakes: {
+      intro: "陣列程式的錯誤多半發生在「多跑一次」或「少跑一次」。",
+      items: [
+        "使用 i <= n 會存取到 values[n]，超出合法範圍。",
+        "在空容器上直接讀 values[0] 會是未定義行為。",
+      ],
+    },
+    summary: {
+      intro: "索引從 0 開始，迴圈條件必須讓最後一次存取停在 n - 1。",
+      points: [
+        "size 是元素數量，最後索引是 size() - 1。",
+        "for 迴圈適合已知次數，while 適合依狀態停止。",
+        "每次存取 vector 前都要確認索引小於 size。",
+      ],
+    },
+    quiz: {
+      question: "大小為 n 的 vector，最後一個合法索引為何？",
+      options: ["n", "n - 1", "1", "n + 1"],
+      answer: 1,
+      explanation: "索引由 0 到 n - 1，共 n 個元素。",
+    },
+  },
+  "functions-and-decomposition": {
+    example: {
+      intro: "把計算最大值抽成函式，讓 main 只負責輸入與輸出。",
+      code: `#include <iostream>
+using namespace std;
+
+int larger(int a, int b) {
+    if (a > b) return a;
+    return b;
+}
+
+int main() {
+    int x, y;
+    cin >> x >> y;
+    cout << larger(x, y);
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "假設輸入 x = 12、y = 8：",
+      states: [
+        "main 將 12 與 8 複製到 larger 的參數 a、b。",
+        "a > b 成立，因此函式執行 return a。",
+        "12 回到呼叫位置，main 把它交給 cout。",
+      ],
+    },
+    mistakes: {
+      intro: "函式若責任不清，錯誤會很難定位。",
+      items: [
+        "宣告非 void 回傳值，卻有分支沒有 return，會得到未定義結果。",
+        "需要修改呼叫者變數時仍使用傳值，修改只會發生在副本。",
+      ],
+    },
+    summary: {
+      intro: "好的函式名稱可以直接說明輸入、責任與回傳結果。",
+      points: [
+        "參數是函式的輸入，return 是函式的輸出。",
+        "函式內宣告的區域變數在函式結束後消失。",
+        "先用一句話描述步驟，再決定哪些步驟值得成為函式。",
+      ],
+    },
+    quiz: {
+      question: "若函式必須修改呼叫者傳入的 vector，參數應使用什麼？",
+      options: ["vector 傳值", "const vector&", "vector&", "只傳 size"],
+      answer: 2,
+      explanation: "非 const 參考能讓函式直接修改原容器。",
+    },
+  },
+  "sorting-and-order": {
+    example: {
+      intro: "排序後，最小與最大值會固定在容器兩端，也能讓二分搜尋成立。",
+      code: `#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> values = {8, 3, 5, 1};
+    sort(values.begin(), values.end());
+    cout << values.front() << " " << values.back();
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "排序前後比較：",
+      states: [
+        "原始資料：[8, 3, 5, 1]。",
+        "sort 後：[1, 3, 5, 8]。",
+        "front 是 1、back 是 8，資料具有大小順序。",
+      ],
+    },
+    mistakes: {
+      intro: "排序結果與後續搜尋的前提必須一致。",
+      items: [
+        "認為 sort 一定會保留相同元素的原始順序，其實穩定排序需使用 stable_sort。",
+        "資料尚未排序就直接使用二分搜尋，左、右判斷會失效。",
+      ],
+    },
+    summary: {
+      intro: "排序是為了建立可利用的順序，不只是為了輸出漂亮。",
+      points: [
+        "一般 sort 的常見時間成本是 O(n log n)。",
+        "升冪排序後，左側元素不大於右側元素。",
+        "任何依賴排序的演算法都要先確認資料真的有序。",
+      ],
+    },
+    quiz: {
+      question: "使用 lower_bound 前最重要的前提是什麼？",
+      options: ["資料都是正數", "資料已排序", "元素不重複", "元素數量為偶數"],
+      answer: 1,
+      explanation: "二分式搜尋要靠有序性決定要保留哪一半。",
+    },
+  },
+  "linear-search-complexity": {
+    example: {
+      intro: "線性搜尋逐一比較，找到目標就立即停止。",
+      code: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int findIndex(const vector<int>& values, int target) {
+    for (int i = 0; i < values.size(); i++) {
+        if (values[i] == target) return i;
+    }
+    return -1;
+}`,
+    },
+    trace: {
+      intro: "在 [4, 9, 2, 7] 尋找 2：",
+      states: [
+        "檢查索引 0 的 4，不等於 2。",
+        "檢查索引 1 的 9，不等於 2。",
+        "檢查索引 2 的 2，相等並回傳 2。",
+      ],
+    },
+    mistakes: {
+      intro: "線性搜尋最大的風險是過早宣告失敗。",
+      items: [
+        "第一次不相符就回傳 -1，會漏掉後面的答案。",
+        "使用範圍迴圈卻找不到索引時，要另外維護目前索引。",
+      ],
+    },
+    summary: {
+      intro: "在資料未排序時，逐項檢查仍是必要且可靠的方法。",
+      points: [
+        "最壞情況需要檢查 n 個元素，時間複雜度是 O(n)。",
+        "找到答案後立即 return 可以避免多餘工作。",
+        "只有完整跑完迴圈仍未命中時，才輸出找不到。",
+      ],
+    },
+    quiz: {
+      question: "一百萬筆未排序資料最壞要檢查多少元素才能確認目標不存在？",
+      options: ["約 20 個", "約 1000 個", "一百萬個", "永遠只要 1 個"],
+      answer: 2,
+      explanation: "未排序且沒有其他結構資訊時，必須逐項確認每個元素。",
+    },
+  },
+  "binary-search-invariant": {
+    example: {
+      intro: "閉區間二分搜尋的核心是每回合維持「答案可能仍在 [left, right]」。",
+      code: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int search(const vector<int>& values, int target) {
+    int left = 0, right = values.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (values[mid] == target) return mid;
+        if (values[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}`,
+    },
+    trace: {
+      intro: "在 [1, 3, 5, 7, 9, 11, 13] 尋找 9：",
+      states: [
+        "[0, 6]：mid = 3，values[3] = 7 < 9，丟掉左半，left = 4。",
+        "[4, 6]：mid = 5，values[5] = 11 > 9，right = 4。",
+        "[4, 4]：mid = 4，values[4] = 9，回傳 4。",
+      ],
+    },
+    mistakes: {
+      intro: "二分搜尋的錯誤通常不是概念，而是邊界更新。",
+      items: [
+        "使用閉區間卻把迴圈寫成 left < right，可能漏掉一個元素。",
+        "更新成 left = mid 或 right = mid，會讓區間不再縮小。",
+      ],
+    },
+    summary: {
+      intro: "二分搜尋是一種「保持答案仍在候選區間」的證明過程。",
+      points: [
+        "先明確選擇閉區間或半開區間，再統一所有邊界。",
+        "每次比較都要排除不可能的一半。",
+        "重複值需要額外決定要回傳任意位置或第一個位置。",
+      ],
+    },
+    quiz: {
+      question: "閉區間二分搜尋中，哪個更新能確保區間縮小？",
+      options: ["left = mid", "right = mid", "left = mid + 1", "left 不變"],
+      answer: 2,
+      explanation: "排除已檢查的 mid 並讓 left 前進，區間才會縮小。",
+    },
+  },
+  "binary-search-debugging": {
+    example: {
+      intro: "尋找第一個不小於 target 的位置時，找到答案後仍要繼續往左確認。",
+      code: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int lowerBound(const vector<int>& values, int target) {
+    int left = 0, right = values.size() - 1, answer = -1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (values[mid] >= target) {
+            answer = mid;
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return answer;
+}`,
+    },
+    trace: {
+      intro: "在 [1, 3, 3, 5] 尋找第一個大於等於 3 的位置：",
+      states: [
+        "[0, 3]：mid = 1，values[1] = 3，先記錄 answer = 1，right = 0。",
+        "[0, 0]：mid = 0，values[0] = 1 < 3，left = 1。",
+        "left > right，停止並回傳目前已找到的最佳位置 1。",
+      ],
+    },
+    mistakes: {
+      intro: "上下界題目要同時追蹤「值」與「位置」。",
+      items: [
+        "找到符合條件的值就立刻回傳，可能不是第一個。",
+        "把「沒有符合元素」誤寫成 values.size() 而不是題目要求的 -1。",
+      ],
+    },
+    summary: {
+      intro: "先寫清楚答案要滿足的性質，再決定縮小哪一側。",
+      points: [
+        "答案位置要另外保存，不能只看最後一次 mid。",
+        "遇到重複值時，條件成立仍要繼續往左搜尋。",
+        "先用三到五個小陣列手動追蹤，是找邊界 bug 的最快方法。",
+      ],
+    },
+    quiz: {
+      question: "二分搜尋中可能造成無限迴圈的直接原因是什麼？",
+      options: ["mid 沒有被排除", "答案太小", "陣列有負數", "輸出沒有換行"],
+      answer: 0,
+      explanation: "若每回合都保留相同的 mid，left 與 right 可能永遠不變。",
+    },
+  },
+  "strings-basics": {
+    example: {
+      intro: "使用 getline 讀取完整句子，再逐字計算特定字元。",
+      code: `#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string line;
+    getline(cin, line);
+    int spaces = 0;
+    for (char ch : line) {
+        if (ch == ' ') spaces++;
+    }
+    cout << spaces;
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "若 line = \"C++ Lab\"：",
+      states: [
+        "line 的大小是 7，合法索引為 0 到 6。",
+        "走訪到索引 3 時，ch 是空白字元。",
+        "spaces 由 0 變成 1，最後輸出 1。",
+      ],
+    },
+    mistakes: {
+      intro: "字串常錯在輸入方式與空字串。",
+      items: [
+        "使用 cin >> 讀句子時，只會拿到第一個空白前的內容。",
+        "對空字串直接存取 line[0] 會是未定義行為。",
+      ],
+    },
+    summary: {
+      intro: "string 同時提供長度、索引與安全的高階操作。",
+      points: [
+        "size 回傳字元數量，但索引從 0 開始。",
+        "getline 適合含空白的整行輸入。",
+        "逐字處理時應先確認字串是否為空。",
+      ],
+    },
+    quiz: {
+      question: "讀取整行輸入前，哪個函式最適合搭配 string？",
+      options: ["getline", "sort", "find", "push_back"],
+      answer: 0,
+      explanation: "getline(cin, string) 會讀到換行為止，保留中間空白。",
+    },
+  },
+  "string-search-parsing": {
+    example: {
+      intro: "用 find 定位分隔符，再用 substr 拆開 key 與 value。",
+      code: `#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string input = "name=CppLab";
+    size_t pos = input.find('=');
+    cout << input.substr(0, pos) << "\\n";
+    cout << input.substr(pos + 1);
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "對 name=CppLab 執行拆解：",
+      states: [
+        "find('=') 回傳索引 4。",
+        "substr(0, 4) 得到 name。",
+        "substr(5) 得到 CppLab，因為等號本身要被排除。",
+      ],
+    },
+    mistakes: {
+      intro: "字串位置是索引，不是第幾個元素的人類計數。",
+      items: [
+        "使用 find 後沒有先檢查 npos，就把錯誤位置交給 substr。",
+        "要取等號後方的內容時忘記加 1，會把 = 留在結果中。",
+      ],
+    },
+    summary: {
+      intro: "搜尋回傳位置，片段工具再依位置建立新字串。",
+      points: [
+        "find 找不到時回傳 string::npos。",
+        "substr 的第二個參數是長度，不是結束索引。",
+        "stringstream 適合不固定數量的空白分隔資料。",
+      ],
+    },
+    quiz: {
+      question: "substr(2, 3) 會取出多少個字元？",
+      options: ["1", "2", "3", "索引 2 和 3"],
+      answer: 2,
+      explanation: "第一個參數是開始索引，第二個參數是長度。",
+    },
+  },
+  "vector-deep-dive": {
+    example: {
+      intro: "動態加入元素、計算總和，再觀察容器大小的改變。",
+      code: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> values;
+    values.push_back(4);
+    values.push_back(7);
+    values.push_back(2);
+    int sum = 0;
+    for (int value : values) sum += value;
+    cout << sum;
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "逐一加入元素時：",
+      states: [
+        "第一次 push_back 後 size = 1，內容為 [4]。",
+        "第二次 push_back 後 size = 2，內容為 [4, 7]。",
+        "第三次後 size = 3，sum 從 0 累加到 13。",
+      ],
+    },
+    mistakes: {
+      intro: "vector 的錯誤常與索引和重新配置有關。",
+      items: [
+        "push_back 可能重新配置記憶體，讓先前取得的 element reference 失效。",
+        "erase 後容器長度改變，不能繼續使用舊的尾端索引。",
+      ],
+    },
+    summary: {
+      intro: "vector 是可調整大小的連續容器，索引操作與陣列相近。",
+      points: [
+        "size 是元素數，capacity 是目前可容納容量。",
+        "只讀傳遞使用 const vector&，修改原容器使用 vector&。",
+        "插入或刪除中間元素可能讓後續元素索引改變。",
+      ],
+    },
+    quiz: {
+      question: "哪個參數最適合只讀取大型 vector 的函式？",
+      options: ["vector<T> values", "vector<T>& values", "const vector<T>& values", "T values"],
+      answer: 2,
+      explanation: "const 參考避免複製，也禁止函式修改原容器。",
+    },
+  },
+  "sets-and-maps": {
+    example: {
+      intro: "用 map 統計單字頻率，再用 set 練習成員查找。",
+      code: `#include <iostream>
+#include <map>
+#include <string>
+using namespace std;
+
+int main() {
+    map<string, int> count;
+    count["cpp"]++;
+    count["cpp"]++;
+    count["lab"]++;
+    cout << count["cpp"];
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "追蹤 map 的內容：",
+      states: [
+        "第一次 count[\"cpp\"]++ 時，map 建立 cpp → 0，再變成 1。",
+        "第二次累加後，cpp → 2。",
+        "加入 lab 後，容器有兩個不同的 key。",
+      ],
+    },
+    mistakes: {
+      intro: "map 的 operator[] 會插入元素，這是最容易忽略的副作用。",
+      items: [
+        "只想查詢是否存在卻使用 count[key]，會不小心新增該 key。",
+        "find 找不到時回傳 end，不能直接解引用。",
+      ],
+    },
+    summary: {
+      intro: "set 管唯一元素，map 管 key 與 value 的關聯。",
+      points: [
+        "set 與 map 的常見查找成本是 O(log n)。",
+        "count 可直接判斷鍵是否存在並回傳 0 或 1。",
+        "需要保持插入順序時，標準 set/map 不是最佳選擇。",
+      ],
+    },
+    quiz: {
+      question: "哪個操作可以在不插入新 key 的情況下檢查 map 是否存在？",
+      options: ["map[key]++", "find(key)", "map[key] = 0", "map[key]"],
+      answer: 1,
+      explanation: "find 只查找並回傳 iterator；operator[] 可能建立元素。",
+    },
+  },
+  "custom-sort-pairs": {
+    example: {
+      intro: "先以分數由高到低排序，分數相同再依名稱排序。",
+      code: `#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<pair<string, int>> rows = {{"Bob", 80}, {"Ada", 90}, {"Cy", 80}};
+    sort(rows.begin(), rows.end(), [](const auto& a, const auto& b) {
+        if (a.second != b.second) return a.second > b.second;
+        return a.first < b.first;
+    });
+    for (const auto& row : rows)
+        cout << row.first << " " << row.second << "\\n";
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "排序規則分成兩層：",
+      states: [
+        "Ada 的 90 最高，因此排在最前。",
+        "Bob 與 Cy 都是 80，主條件相同。",
+        "使用名稱升冪，所以 Bob 排在 Cy 前面。",
+      ],
+    },
+    mistakes: {
+      intro: "比較器必須形成一致的嚴格弱序。",
+      items: [
+        "比較器使用 <= 時，相同元素可能被判定為同時前後，造成不合法排序。",
+        "只比較第一欄位，分數相同時順序可能不穩定。",
+      ],
+    },
+    summary: {
+      intro: "自訂排序是把題目的優先順序翻譯成比較器。",
+      points: [
+        "先比較主要欄位，不同才比較次要欄位。",
+        "比較器回傳 true 代表 a 應排在 b 前面。",
+        "排序後應檢查相同主鍵的資料是否符合題目規則。",
+      ],
+    },
+    quiz: {
+      question: "哪個比較器條件通常是不合法的？",
+      options: ["a.score > b.score", "a.name < b.name", "a.score <= b.score", "a.id < b.id"],
+      answer: 2,
+      explanation: "對相等元素回傳 true 會違反嚴格弱序的一致要求。",
+    },
+  },
+  "binary-search-stl": {
+    example: {
+      intro: "用 lower_bound 與 upper_bound 找出重複值範圍。",
+      code: `#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> values = {1, 3, 3, 3, 5};
+    auto first = lower_bound(values.begin(), values.end(), 3);
+    auto last = upper_bound(values.begin(), values.end(), 3);
+    cout << distance(values.begin(), first) << " "
+         << distance(first, last);
+    return 0;
+}`,
+    },
+    trace: {
+      intro: "在 [1, 3, 3, 3, 5] 查詢 3：",
+      states: [
+        "lower_bound 回傳索引 1 的 3。",
+        "upper_bound 回傳索引 4 的 5。",
+        "distance(first, last) = 3，表示 3 出現三次。",
+      ],
+    },
+    mistakes: {
+      intro: "STL 回傳的是 iterator，不是直接索引。",
+      items: [
+        "把 upper_bound 誤當成最後一個等於 target 的位置，會少算一個元素。",
+        "直接對未排序容器呼叫上下界函式，結果沒有意義。",
+      ],
+    },
+    summary: {
+      intro: "上下界把二分搜尋整理成兩個可靠且可重用的操作。",
+      points: [
+        "lower_bound 找第一個 >= target 的位置。",
+        "upper_bound 找第一個 > target 的位置。",
+        "先檢查 iterator 是否等於 end，再轉成索引或計算距離。",
+      ],
+    },
+    quiz: {
+      question: "upper_bound 回傳的第一個元素具有什麼性質？",
+      options: ["等於 target", "小於 target", "大於 target", "一定不存在"],
+      answer: 2,
+      explanation: "upper_bound 會跳過所有等於 target 的元素，停在第一個更大的元素。",
+    },
+  },
+};
+
+export const lessons: Lesson[] = lessonCores.map((lesson) => {
+  const enrichment = lessonEnrichments[lesson.slug];
+  return {
+    ...lesson,
+    sections: [
+      ...lesson.sections,
+      {
+        title: "完整範例",
+        body: enrichment.example.intro,
+        code: enrichment.example.code,
+      },
+      {
+        title: "逐步追蹤",
+        body: enrichment.trace.intro,
+        trace: enrichment.trace.states,
+      },
+      {
+        title: "常見錯誤與修正",
+        body: enrichment.mistakes.intro,
+        pitfalls: enrichment.mistakes.items,
+      },
+      {
+        title: "重點整理",
+        body: enrichment.summary.intro,
+        keyPoints: enrichment.summary.points,
+      },
+    ],
+    quizzes: [lesson.quiz, enrichment.quiz],
+  };
+});
 
 export function getLesson(slug: string) {
   return lessons.find((lesson) => lesson.slug === slug);

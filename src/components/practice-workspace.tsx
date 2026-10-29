@@ -8,11 +8,14 @@ import {
   Clock3,
   Code2,
   Filter,
+  Gauge,
+  ListChecks,
   Play,
   RotateCcw,
   Search,
   Send,
   TerminalSquare,
+  TriangleAlert,
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -440,6 +443,16 @@ export function PracticeWorkspace({
               <dt>輸出格式</dt>
               <dd>{exercise.outputFormat}</dd>
             </div>
+            <div>
+              <dt>限制與邊界</dt>
+              <dd>
+                <ul className="constraint-list">
+                  {exercise.constraints.map((constraint) => (
+                    <li key={constraint}>{constraint}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
           </dl>
 
           <div className="sample-block">
@@ -457,7 +470,66 @@ export function PracticeWorkspace({
                 <pre>{exercise.samples[0].output}</pre>
               </div>
             </div>
+            {exercise.samples.length > 1 ? (
+              <details className="more-samples">
+                <summary>
+                  查看其他 {exercise.samples.length - 1} 組公開範例
+                </summary>
+                {exercise.samples.slice(1).map((sample, index) => (
+                  <div className="sample-grid" key={`${sample.input}-${index}`}>
+                    <div>
+                      <span>輸入</span>
+                      <pre>{sample.input || "（無）"}</pre>
+                    </div>
+                    <div>
+                      <span>預期輸出</span>
+                      <pre>{sample.output}</pre>
+                    </div>
+                  </div>
+                ))}
+              </details>
+            ) : null}
           </div>
+
+          <section className="solution-guide">
+            <h3>
+              <ListChecks size={16} />
+              解題思路
+            </h3>
+            <ol>
+              {exercise.strategy.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+            <div className="complexity-box">
+              <Gauge size={16} />
+              <span>時間 {exercise.complexity.time}</span>
+              <span>空間 {exercise.complexity.space}</span>
+              <p>{exercise.complexity.explanation}</p>
+            </div>
+            <details className="problem-explainer">
+              <summary>逐步推演</summary>
+              <ol>
+                {exercise.walkthrough.map((state) => (
+                  <li key={state}>{state}</li>
+                ))}
+              </ol>
+            </details>
+            <details className="problem-explainer is-warning">
+              <summary>
+                <TriangleAlert size={14} />
+                常見錯誤與修正
+              </summary>
+              <ul>
+                {exercise.commonMistakes.map((item) => (
+                  <li key={item.mistake}>
+                    <strong>{item.mistake}</strong>
+                    <p>{item.fix}</p>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </section>
 
           <HintPanel
             hints={exercise.hints}

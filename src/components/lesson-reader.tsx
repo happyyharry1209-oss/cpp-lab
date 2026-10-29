@@ -17,9 +17,60 @@ import { exercises } from "@/content/exercises";
 import { useLocalProgress } from "@/hooks/use-local-progress";
 import { uniquePush } from "@/lib/progress";
 
+function LessonQuizCard({
+  id,
+  quiz,
+  selected,
+  onSelect,
+}: {
+  id: string;
+  quiz: Lesson["quiz"];
+  selected: number | undefined;
+  onSelect: (answer: number) => void;
+}) {
+  return (
+    <section className="quiz-card" aria-labelledby={id}>
+      <div className="quiz-heading">
+        <span>
+          <Lightbulb size={18} />
+        </span>
+        <div>
+          <h2 id={id}>確認一下</h2>
+          <p>{quiz.question}</p>
+        </div>
+      </div>
+      <div className="quiz-options">
+        {quiz.options.map((option, index) => (
+          <button
+            key={option}
+            type="button"
+            className={
+              selected === index
+                ? index === quiz.answer
+                  ? "is-correct"
+                  : "is-wrong"
+                : undefined
+            }
+            onClick={() => onSelect(index)}
+          >
+            <span>{String.fromCharCode(65 + index)}</span>
+            {option}
+          </button>
+        ))}
+      </div>
+      {selected !== undefined ? (
+        <p className="quiz-explanation" role="status">
+          {selected === quiz.answer ? "答對了。" : "再看一次。"}
+          {quiz.explanation}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
 export function LessonReader({ lesson }: { lesson: Lesson }) {
   const { progress, save } = useLocalProgress();
-  const [answer, setAnswer] = useState<number | null>(null);
+  const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
   const completed = progress.completedLessons.includes(lesson.slug);
   const previous = lessons[lesson.number - 2];
   const next = lessons[lesson.number];
@@ -78,47 +129,48 @@ export function LessonReader({ lesson }: { lesson: Lesson }) {
                     </pre>
                   </div>
                 ) : null}
+                {section.trace ? (
+                  <ol className="section-trace">
+                    {section.trace.map((state) => (
+                      <li key={state}>{state}</li>
+                    ))}
+                  </ol>
+                ) : null}
+                {section.pitfalls ? (
+                  <ul className="section-pitfalls">
+                    {section.pitfalls.map((pitfall) => (
+                      <li key={pitfall}>{pitfall}</li>
+                    ))}
+                  </ul>
+                ) : null}
+                {section.keyPoints ? (
+                  <ul className="section-key-points">
+                    {section.keyPoints.map((point) => (
+                      <li key={point}>
+                        <CheckCircle2 size={14} />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </div>
             </section>
           ))}
         </div>
 
-        <section className="quiz-card" aria-labelledby="quiz-title">
-          <div className="quiz-heading">
-            <span>
-              <Lightbulb size={18} />
-            </span>
-            <div>
-              <h2 id="quiz-title">確認一下</h2>
-              <p>{lesson.quiz.question}</p>
-            </div>
-          </div>
-          <div className="quiz-options">
-            {lesson.quiz.options.map((option, index) => (
-              <button
-                key={option}
-                type="button"
-                className={
-                  answer === index
-                    ? index === lesson.quiz.answer
-                      ? "is-correct"
-                      : "is-wrong"
-                    : undefined
-                }
-                onClick={() => setAnswer(index)}
-              >
-                <span>{String.fromCharCode(65 + index)}</span>
-                {option}
-              </button>
-            ))}
-          </div>
-          {answer !== null ? (
-            <p className="quiz-explanation" role="status">
-              {answer === lesson.quiz.answer ? "答對了。" : "再看一次。"}
-              {lesson.quiz.explanation}
-            </p>
-          ) : null}
-        </section>
+        <div className="quiz-stack">
+          {lesson.quizzes.map((quiz, index) => (
+            <LessonQuizCard
+              key={quiz.question}
+              id={`lesson-quiz-${index}`}
+              quiz={quiz}
+              selected={quizAnswers[index]}
+              onSelect={(answer) =>
+                setQuizAnswers((current) => ({ ...current, [index]: answer }))
+              }
+            />
+          ))}
+        </div>
 
         <div className="lesson-completion">
           <div>
@@ -202,7 +254,7 @@ export function LessonReader({ lesson }: { lesson: Lesson }) {
             ))}
             <li>
               <span>{lesson.sections.length + 1}</span>
-              理解檢查
+              理解檢查（{lesson.quizzes.length} 題）
             </li>
           </ol>
         </div>

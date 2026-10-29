@@ -104,4 +104,15 @@ describe("practice workspace", () => {
       screen.getByRole("heading", { name: "不重複數字數量" }),
     ).toBeInTheDocument();
   });
+
+  it("shows constraints, strategy and debugging guidance", () => {
+    render(<PracticeWorkspace initialExerciseSlug="hello-cpp-lab" />);
+
+    expect(
+      screen.getByRole("heading", { name: "解題思路" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("先建立最小的 main 函式。")).toBeInTheDocument();
+    expect(screen.getByText("常見錯誤與修正")).toBeInTheDocument();
+    expect(screen.getByText("時間 O(1)")).toBeInTheDocument();
+  });
 });

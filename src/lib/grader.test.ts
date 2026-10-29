@@ -16,6 +16,18 @@ const exercise: Exercise = {
   hints: ["1", "2", "3", "4", "5"],
   solution: "int main() { return 0; }",
   samples: [{ input: "1", output: "1" }],
+  constraints: ["1 <= n <= 10"],
+  strategy: ["Read", "Compute", "Write"],
+  walkthrough: ["Read 1", "Compute 1", "Write 1"],
+  complexity: {
+    time: "O(1)",
+    space: "O(1)",
+    explanation: "Sample.",
+  },
+  commonMistakes: [
+    { mistake: "Wrong answer", fix: "Check the output." },
+    { mistake: "Missing input", fix: "Read first." },
+  ],
   tests: [
     { input: "1", output: "1" },
     { input: "2", output: "4" },

@@ -136,6 +136,31 @@ test("a lesson recommends its next practice exercise", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test("detailed lessons and exercises expose guidance blocks", async ({
+  page,
+}) => {
+  const errors = captureRuntimeErrors(page);
+  await page.goto("/learn/strings-basics");
+  await expect(
+    page.getByRole("heading", { name: "逐步追蹤" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "常見錯誤與修正" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "確認一下" }),
+  ).toHaveCount(2);
+
+  await page.goto("/practice?exercise=count-vowels");
+  await expect(
+    page.getByRole("heading", { name: "解題思路" }),
+  ).toBeVisible();
+  await expect(page.getByText("輸入是一整行文字，可能包含空白。")).toBeVisible();
+  await expect(page.getByText("常見錯誤與修正")).toBeVisible();
+  await expect(page.getByText("時間 O(L)")).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test("login setup remains clear before Supabase is configured", async ({
   page,
 }) => {

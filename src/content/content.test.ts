@@ -38,4 +38,31 @@ describe("C++ Lab content catalogue", () => {
       ).toBe(true);
     }
   });
+
+  it("gives every lesson a complete detailed teaching flow", () => {
+    for (const lesson of lessons) {
+      expect(lesson.sections.length).toBeGreaterThanOrEqual(6);
+      expect(lesson.quizzes.length).toBeGreaterThanOrEqual(2);
+      expect(
+        lesson.sections.some((section) => (section.trace?.length ?? 0) >= 3),
+      ).toBe(true);
+      expect(
+        lesson.sections.some((section) => (section.pitfalls?.length ?? 0) >= 2),
+      ).toBe(true);
+      expect(
+        lesson.sections.some((section) => (section.keyPoints?.length ?? 0) >= 3),
+      ).toBe(true);
+    }
+  });
+
+  it("gives every exercise detailed guidance and extra examples", () => {
+    for (const exercise of exercises) {
+      expect(exercise.constraints.length).toBeGreaterThanOrEqual(3);
+      expect(exercise.strategy.length).toBeGreaterThanOrEqual(3);
+      expect(exercise.walkthrough.length).toBeGreaterThanOrEqual(3);
+      expect(exercise.complexity.time).toBeTruthy();
+      expect(exercise.commonMistakes.length).toBeGreaterThanOrEqual(2);
+      expect(exercise.samples.length).toBeGreaterThanOrEqual(3);
+    }
+  });
 });
