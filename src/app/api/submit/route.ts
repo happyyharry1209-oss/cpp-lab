@@ -44,11 +44,19 @@ export async function POST(request: Request) {
     }
 
     const limit = Number(process.env.DAILY_SUBMIT_LIMIT ?? 10);
-    const rate = checkDailyRunLimit(clientKey(request), limit);
+    const rate = await checkDailyRunLimit(clientKey(request), limit);
     if (!rate.allowed) {
       return NextResponse.json(
-        { error: "今天的提交次數已用完，請明天再試。" },
-        { status: 429 },
+        {
+          error: "今天的提交次數已用完，請明天再試。",
+          retryAfterSeconds: rate.retryAfterSeconds,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(rate.retryAfterSeconds ?? 86_400),
+          },
+        },
       );
     }
 

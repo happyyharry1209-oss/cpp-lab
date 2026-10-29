@@ -14,7 +14,7 @@ C++ Lab 是一個繁體中文、桌面優先的 C++ 學習網站。首頁負責�
 - 編譯錯誤、執行錯誤、逾時、錯誤答案與通過狀態
 - 本機草稿、提示、課程及題目完成度保存
 - 可選的 GitHub OAuth 與 Supabase 跨裝置進度同步
-- 每日執行與提交的基本流量限制
+- 由 Supabase 原子計數器保存的每日執行與提交限制
 - Vitest、Testing Library 與 Playwright 測試
 
 ## 開發
@@ -64,7 +64,7 @@ DAILY_SUBMIT_LIMIT=10
 ## 啟用 GitHub 登入與雲端進度
 
 1. 在 [Supabase](https://supabase.com/) 建立專案。
-2. 在 SQL Editor 執行 `supabase/migrations/202610280001_user_progress.sql`。
+2. 在 SQL Editor 依檔名順序執行 `supabase/migrations/` 內的所有 migration。
 3. 在 Authentication → Providers 啟用 GitHub，依照 Supabase 指示建立 GitHub OAuth App。
 4. 在 Supabase 的 Redirect URLs 加入 `http://localhost:3000/auth/callback`，部署後再加入正式網域的相同路徑。
 5. 複製 `.env.example` 為 `.env.local`，填入：
@@ -73,6 +73,7 @@ DAILY_SUBMIT_LIMIT=10
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 OWNER_GITHUB_EMAIL=your-github-email@example.com
+RATE_LIMIT_SECRET=generate-a-long-random-secret
 ```
 
 `anon` key 可以公開，但只在資料庫 RLS 已啟用時安全。不要在前端使用或提交 `service_role` key。
